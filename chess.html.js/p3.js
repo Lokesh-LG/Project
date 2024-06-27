@@ -1347,7 +1347,7 @@ function undoMove() {
   missingPiecesUpdate();
   checkCheck();
   makePGN();
-  if (document.getElementById("dd3").value === leftBarArr3[0]) showPGN();
+  //if (document.getElementById("dd3").value === leftBarArr3[0]) showPGN();
   highlightPieceBool = false;
   makeBoard();
   highlightPieceBool = true;
