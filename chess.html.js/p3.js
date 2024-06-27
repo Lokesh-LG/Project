@@ -508,9 +508,8 @@ function ddActionsNew(index1, index2) {
       changeCheckColorUI,
       changePreviousColorUI,
       changePieceType,
-      changePieceType,
-      changePieceType,
-      changePieceType,
+      showColRow,
+      changeThemesUI,
     ],
     [
       defaultBoardUI2,
@@ -656,7 +655,7 @@ function defaultFunctionSettings() {
     castleDisable: -1,
   };
   leftBarArrAll = ["Board Settings", "Move Settings", "Game Settings"];
-  //console.clear();
+  console.clear();
 }
 
 //Board Logic
@@ -1746,7 +1745,7 @@ function dd1Actions() {
   } else if (index === 5) {
     changePieceType();
   } else if (index === 6) {
-    showLabels();
+    showColRow();
   } else if (index === 7) {
     changeThemesUI();
   } else if (index === 8) {
