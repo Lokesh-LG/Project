@@ -471,38 +471,46 @@ function makeLeftBarDDMenu(index1) {
     .join("");
 }
 function makeRightBar() {
+  let tableStr = "";
   let tableArr = rightPgnArr.map(function (ele, index) {
     if (index % 2 == 0)
       return (
         "<tr><th class ='right-bar-th'>" +
         (Math.abs(index / 2) + 1) +
-        "</th><td class = 'right-bar-td right-bar-td-even'>" +
+        "</th><td class = 'right-bar-td right-bar-td-even' onclick='changeColorRightBarTd(this)'>" +
         ele +
         "</td>"
       );
     else
       return (
-        "<td class = 'right-bar-td right-bar-td-odd'>" + ele + "</td></tr>"
+        "<td class = 'right-bar-td right-bar-td-odd' onclick='changeColorRightBarTd(this)'>" +
+        ele +
+        "</td></tr>"
       );
   });
   let headStr = "";
-  if (rightPgnArr.length != 0)
-    headStr =
-      "<thead>" +
-      "<div class='btn-group rounded-1' role='group'><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'copyPGN()'><i class='fa-solid fa-copy'></i></button><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'backwardFastPGN()'><i class='fa-solid fa-backward-fast'></i></button><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'backwardStepPGN()'><i class='fa-solid fa-backward-step'></i></button><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'forwardStepPGN()'><i class='fa-solid fa-forward-step'></i></button><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'forwardFastPGN()'><i class='fa-solid fa-forward-fast'></i></button><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'flipBoard()'><i class='fa-solid fa-rotate'></i></button>" +
-      "</thead>";
-  let tableStr =
-    "<table class = 'table-dark table-block'>" +
-    headStr +
-    tableArr.join("") +
-    "</table>";
+  headStr =
+    "<thead>" +
+    "<div class='btn-group rounded-1' role='group'><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'copyPGN()'><i class='fa-solid fa-copy'></i></button><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'backwardFastPGN()'><i class='fa-solid fa-backward-fast'></i></button><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'backwardStepPGN()'><i class='fa-solid fa-backward-step'></i></button><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'forwardStepPGN()'><i class='fa-solid fa-forward-step'></i></button><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'forwardFastPGN()'><i class='fa-solid fa-forward-fast'></i></button><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'flipBoard()'><i class='fa-solid fa-rotate'></i></button></div>" +
+    "</thead>";
+  if (rightPgnArr.length != 0 && rightPgnArr.length != 1) {
+    tableStr =
+      headStr +
+      "<div class = 'table-container'><table class = 'table-dark table-block'>" +
+      tableArr.join("") +
+      "</table></div>";
+  }
   console.log(tableStr);
   let rightStr =
-    "<div class = 'containerRight'><div class='btn-group-vertical w-100' role='group'><div class='btn-group' role='group'><input type='text' class='btn-name-right' id='opponentName' value='Opponent' placeholder='Opponent'><button class = 'p-3 btn btn-light btn-right w-100 h-100'>Timer</button></div><span class = 'color-line-top'></span><div id = 'missingPieceWhite' class='missing-piece'></div>" +
+    "<div class = 'containerRight'><div id = 'missingPieceWhite' class='missing-piece-top'></div><div class='btn-group-vertical w-100' role='group'><div class='btn-group' role='group'><input type='text' class='btn-name-right' id='opponentName' value='Opponent' placeholder='Opponent'><button class = 'p-3 btn btn-light btn-right w-100 h-100'>Timer</button></div><span class = 'color-line-top'></span>" +
     tableStr +
-    "<span class = 'color-line-bottom'></span><div class='btn-group-vertical w-100' role='group'><div class='btn-group' role='group'><input type='text' class='btn-name-right' id='userName' value='You' placeholder='You'><button class = 'p-3 btn btn-light btn-right w-100 h-100'>Timer</button></div><div id = 'missingPieceBlack' class='missing-piece'></div></div></div>";
+    "<span class = 'color-line-bottom'></span><div class='btn-group-vertical w-100' role='group'><div class='btn-group' role='group'><input type='text' class='btn-name-right' id='userName' value='You' placeholder='You'><button class = 'p-3 btn btn-light btn-right w-100 h-100'>Timer</button></div><div id = 'missingPieceBlack' class='missing-piece-bottom'></div></div></div>";
   document.getElementById("rightbar").innerHTML = rightStr;
-  missingPiecesUpdate();
+  if (rightPgnArr.length != 0 && rightPgnArr.length != 1) {
+    let tableContainer = document.querySelector(".table-container");
+    tableContainer.scrollTop = tableContainer.scrollHeight;
+    missingPiecesUpdate();
+  }
 }
 function closeOptionsLeftDD() {
   leftBarOpenStatus = [false, false, false];
@@ -541,6 +549,14 @@ function ddActionsNew(index1, index2) {
     [showPGN, importPGNUI],
   ];
   ddActionsFns[index1][index2]();
+}
+function changeColorRightBarTd(td) {
+  let clickedColor = "#88ffff";
+  let allTds = document.querySelectorAll(".right-bar-td");
+  allTds.forEach(function (element) {
+    element.style.removeProperty("color");
+  });
+  td.style.color = clickedColor;
 }
 function makeStartBoard() {
   for (row = 0; row <= 7; row++) {

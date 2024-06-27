@@ -213,19 +213,25 @@ select {
 }
 .right-bar-th {
   width: 16.6%;
+  padding: 0;
+  margin: 0;
+  background-color: rgba(256, 256, 256, 0.1) !important;
+  border: 1px solid rgba(0, 0, 0, 0.9) !important;
   text-align: center;
+  border-radius: 0px !important;
 }
 .right-bar-td {
   width: 41.7%;
+  background-color: rgba(0, 0, 0, 0.9);
+}
+.right-bar-td:hover {
+  background-color: rgba(0, 256, 256, 0.1);
 }
 .right-bar-td-even {
   padding-left: 15%;
 }
 .right-bar-td-odd {
-  padding-left: 6%;
-}
-.right-bar-td:focus {
-  background-color: rgba(0, 256, 256, 0.5);
+  padding-left: 11%;
 }
 .color-line-top {
   height: 5px;
@@ -297,9 +303,29 @@ select {
 .table-block {
   padding: 0;
   margin: 0;
-  background-color: rgba(256, 256, 256, 0.1);
   color: white;
   width: 100%;
+}
+.table-container {
+  width: 100%;
+  max-height: 265px;
+  padding: 0;
+  margin: 0;
+  overflow-y: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.9) rgba(0, 0, 0, 0.9);
+}
+.table-container::-webkit-scrollbar {
+  width: 0px;
+  border: none;
+  outline: none;
+  background: rgba(0, 0, 0, 0.9);
+}
+.table-container::-webkit-scrollbar-thumb {
+  border: none;
+  outline: none;
+  background: rgba(0, 0, 0, 0.9);
 }
 .btn-right {
   padding: 0;
@@ -344,7 +370,7 @@ select {
 .btn-right-block:hover {
   color: #ccffff;
   background-color: rgba(256, 256, 256, 0.2);
-  border: 1px solid rgba(0, 256, 256, 0.4);
+  border: 1px solid rgba(0, 256, 256, 0.3);
 }
 .abcd-label {
   align-items: start;
@@ -376,11 +402,19 @@ select {
 .cellBorder-bottom-end {
   border-bottom-right-radius: 10px;
 }
-.missing-piece {
+.missing-piece-bottom {
   background-color: rgba(0, 256, 256, 0.2);
   border: 1px solid rgba(0, 0, 0, 0.9);
   border-bottom-right-radius: 10px;
   border-bottom-left-radius: 10px;
+  width: 100%;
+}
+.missing-piece-top {
+  background-color: rgba(0, 256, 256, 0.2);
+  border: 1px solid rgba(0, 0, 0, 0.9);
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+  width: 100%;
 }
 .text-white {
   text-align: center;
