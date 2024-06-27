@@ -394,6 +394,8 @@ function confirmedTime() {
 //   document.getElementById("leftbar").innerHTML = leftStr;
 // }
 function makeLeftBar(actionsData) {
+  let missingPieceElement = document.getElementById("missingPiece");
+  missingPieceStr = missingPieceElement ? missingPieceElement.innerHTML : "";
   leftStr =
     "<div class = 'containerLeft'><div class='btn-group-vertical w-100' role='group'>" +
     "<div class='btn-group' role='group'>" +
@@ -404,12 +406,15 @@ function makeLeftBar(actionsData) {
       return makeLeftDD(ele, index, leftBarOpenStatus[index]);
     })
     .join("");
-  leftStr += "<div id = 'missingPiece' class ='missing-piece'></div></div>";
+  leftStr +=
+    "<div id = 'missingPiece' class ='missing-piece'>" +
+    missingPieceStr +
+    "</div></div>";
   document.getElementById("leftbar").innerHTML = leftStr;
 }
 function makeLeftDD(txt, index1, isOpen) {
   let str =
-    "<button class='p-3 btn btn-light btn-block h-100' onclick='showOptionsLeftDD(" +
+    "<button class='p-3 dd-menu-block btn btn-light btn-block h-100' onclick='showOptionsLeftDD(" +
     index1 +
     ",-1)' >" +
     txt +
@@ -427,7 +432,7 @@ function makeLeftBarDDMenu(index1) {
   return leftBarArr[index1]
     .map(function (ele, index2) {
       return (
-        "<button class='btn dd-menu-block btn-bd-secondary w-100 h-100'type='button' onclick='showOptionsLeftDD(" +
+        "<button class='btn dd-menu-block btn-bd-secondary w-100 h-100' style='padding-left:36px' type='button' onclick='showOptionsLeftDD(" +
         index1 +
         "," +
         index2 +
@@ -437,6 +442,10 @@ function makeLeftBarDDMenu(index1) {
       );
     })
     .join("");
+}
+function closeOptionsLeftDD() {
+  leftBarOpenStatus = [false, false, false];
+  makeLeftBar();
 }
 function showOptionsLeftDD(index1, index2) {
   if (index2 === -1) {
@@ -610,6 +619,7 @@ function defaultFunctionSettings() {
 
 //Board Logic
 function boardClick(row, col) {
+  closeOptionsLeftDD();
   console.log(prevrow, prevcol, row, col);
   if (prevrow === -1 || prevcol === -1) {
     if (
@@ -1066,7 +1076,7 @@ function pawnPromotionClick(row, col) {
   lastMoveJSON.checkBool = underCheck.bool;
   pgnArr.push(lastMoveJSON);
   makePGN();
-  if (document.getElementById("dd3").value === leftBarArr3[0]) showPGN();
+  //if (document.getElementById("dd3").value === leftBarArr3[0]) showPGN();
   makeBoard();
   virtualBoardArr = boardArrLine.map(function (ele) {
     return [...boardArrLine];
