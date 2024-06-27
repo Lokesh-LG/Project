@@ -414,7 +414,8 @@ function makeLeftBar(actionsData) {
     "<div class = 'containerLeft'><div class='btn-group-vertical w-100' role='group'>" +
     "<div class='btn-group' role='group'>" +
     "<button class = 'p-3 btn btn-light btn-block-red w-100 h-100' onclick = 'undoMove()'><i class='fa-solid fa-left-long'></i> Undo Move</button>" +
-    "<button class = 'p-3 btn btn-light btn-green w-100 h-100' onclick = 'redoMove()'><i class='fa-solid fa-right-long'></i> Redo Move</button></div>";
+    "<button class = 'p-3 btn btn-light btn-green w-100 h-100' onclick = 'redoMove()'><i class='fa-solid fa-right-long'></i> Redo Move</button></div>" +
+    "<div class = 'height-break'></div>";
   leftStr += leftBarArrAll
     .map(function (ele, index) {
       return makeLeftDD(ele, index, leftBarOpenStatus[index]);
@@ -426,12 +427,16 @@ function makeLeftBar(actionsData) {
     "</div></div>";
   document.getElementById("leftbar").innerHTML = leftStr;
 }
-function makeLeftDD(txt, index1, isOpen) {
+function makeLeftDD(ele, index1, isOpen) {
   let str =
-    "<button class='p-3 dd-menu-block btn btn-light btn-block h-100' onclick='showOptionsLeftDD(" +
+    "<button class='p-3 btn text-start btn-light btn-block h-100' onclick='showOptionsLeftDD(" +
     index1 +
     ",-1)' >" +
-    txt +
+    "<i class='fas  " +
+    ele.icon +
+    "'></i>" +
+    "&nbsp;&nbsp;" +
+    ele.txt +
     "<i class='align-right-fa-icon fas " +
     (isOpen ? "fa-caret-up" : "fa-caret-down") +
     "'></i></button>" +
@@ -654,7 +659,11 @@ function defaultFunctionSettings() {
     pawnPromotedto: "",
     castleDisable: -1,
   };
-  leftBarArrAll = ["Board Settings", "Move Settings", "Game Settings"];
+  leftBarArrAll = [
+    { txt: "Board Settings", icon: "fa-cog" },
+    { txt: "Move Settings", icon: "fa-cog" },
+    { txt: "Game Settings", icon: "fa-cog" },
+  ];
   console.clear();
 }
 
@@ -1749,13 +1758,13 @@ function dd1Actions() {
   } else if (index === 7) {
     changeThemesUI();
   } else if (index === 8) {
-    document.getElementById("dd1").value = leftBarArrAll[0];
+    document.getElementById("dd1").value = leftBarArrAll[0].txt;
     document.getElementById("dd1menu").innerHTML = "";
   }
   document.getElementById("dd2menu").innerHTML = "";
-  document.getElementById("dd2").value = leftBarArrAll[1];
+  document.getElementById("dd2").value = leftBarArrAll[1].txt;
   document.getElementById("dd3menu").innerHTML = "";
-  document.getElementById("dd3").value = leftBarArrAll[2];
+  document.getElementById("dd3").value = leftBarArrAll[2].txt;
 }
 function dd2Actions() {
   let value = document.getElementById("dd2").value;
@@ -1773,13 +1782,13 @@ function dd2Actions() {
   } else if (index === 4) {
     changeValidMoveDot();
   } else if (index === 5) {
-    document.getElementById("dd2").value = leftBarArrAll[1];
+    document.getElementById("dd2").value = leftBarArrAll[1].txt;
     document.getElementById("dd2menu").innerHTML = "";
   }
   document.getElementById("dd1menu").innerHTML = "";
-  document.getElementById("dd1").value = leftBarArrAll[0];
+  document.getElementById("dd1").value = leftBarArrAll[0].txt;
   document.getElementById("dd3menu").innerHTML = "";
-  document.getElementById("dd3").value = leftBarArrAll[2];
+  document.getElementById("dd3").value = leftBarArrAll[2].txt;
 }
 function dd3Actions() {
   let value = document.getElementById("dd3").value;
@@ -1791,13 +1800,13 @@ function dd3Actions() {
   } else if (index === 1) {
     importPGNUI();
   } else if (index === 2) {
-    document.getElementById("dd3").value = leftBarArrAll[2];
+    document.getElementById("dd3").value = leftBarArrAll[2].txt;
     document.getElementById("dd3menu").innerHTML = "";
   }
   document.getElementById("dd1menu").innerHTML = "";
-  document.getElementById("dd1").value = leftBarArrAll[0];
+  document.getElementById("dd1").value = leftBarArrAll[0].txt;
   document.getElementById("dd2menu").innerHTML = "";
-  document.getElementById("dd2").value = leftBarArrAll[1];
+  document.getElementById("dd2").value = leftBarArrAll[1].txt;
 }
 
 //LeftBar dd1
