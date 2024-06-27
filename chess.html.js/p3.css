@@ -4,6 +4,7 @@ body {
   background-color: rgba(0, 0, 0, 0.9);
   color: white;
 }
+/* Add a function allowing to upload image to set as background and then give that property to body*/
 select {
   font-family: "FontAwesome";
 }
@@ -96,7 +97,6 @@ select {
   background-color: rgba(256, 256, 256, 0.1);
   border: 1px solid rgba(0, 0, 0, 0.9);
   color: white;
-  border: 1px solid rgba(0, 0, 0, 0.9);
 }
 .btn-block:hover {
   color: #ccffff;
@@ -201,12 +201,139 @@ select {
   position: absolute;
   top: 12px;
   left: 1px;
-  width: 20%;
+  width: 26%;
   margin-top: 60px;
+}
+.containerRight {
+  position: absolute;
+  top: 107px;
+  right: 0px;
+  width: 26%;
+  margin-top: 60px;
+}
+.color-line-top {
+  height: 5px;
+  border: none;
+  background: linear-gradient(
+    to right,
+    #b3ecf1,
+    #83dfe9,
+    #53d1df,
+    #33c7d8,
+    #1fbdd2,
+    #1dadc0,
+    #1a98a6,
+    #18848e,
+    #136163,
+    #136163,
+    #18848e,
+    #1a98a6,
+    #1dadc0,
+    #1fbdd2,
+    #33c7d8,
+    #53d1df,
+    #83dfe9,
+    #b3ecf1
+  );
+  background-size: 200% 100%;
+  animation: flow 10s linear infinite;
+  width: 100%;
+}
+.color-line-bottom {
+  height: 5px;
+  border: none;
+  background: linear-gradient(
+    to right,
+    #53d1df,
+    #53e1ef,
+    #33c7d8,
+    #33d7e8,
+    #1fbdd2,
+    #1dadc0,
+    #1a98a6,
+    #18848e,
+    #136163,
+    #083808,
+    #136163,
+    #18848e,
+    #1dadc0,
+    #1fbdd2,
+    #33d7e8,
+    #33c7d8,
+    #53e1ef,
+    #53d1df
+  );
+  background-size: 200% 100%;
+  animation: flow 10s linear infinite;
+  width: 100%;
+}
+@keyframes flow {
+  0% {
+    background-position: 100% 0%;
+  }
+  50% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 100% 0%;
+  }
+}
+.table-block {
+  padding: 0;
+  margin: 0;
+  background-color: rgba(256, 256, 256, 0.1);
+  color: white;
+  width: 100%;
+}
+.btn-right {
+  padding: 0;
+  margin: 0;
+  background-color: rgba(256, 256, 256, 0.1);
+  border: none;
+  color: white;
+}
+.btn-right:hover {
+  color: #ccffff;
+  background-color: rgba(256, 256, 256, 0.2);
+  border: none;
+  box-shadow: none;
+}
+.btn-name-right {
+  padding: 0;
+  margin: 0;
+  background-color: rgba(0, 0, 0, 0.9);
+  border: none;
+  color: white;
+  border-radius: 10px;
+}
+.btn-name-right:hover {
+  color: #ccffff;
+  border: none;
+  box-shadow: none;
+}
+.btn-name-right:focus {
+  color: #aaffff;
+  border: none;
+  outline: none;
+  box-shadow: none !important;
+}
+.btn-right-block {
+  padding: 0;
+  margin: 0;
+  background-color: rgba(256, 256, 256, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.9);
+  color: white;
+  border-radius: 3px !important;
+}
+.btn-right-block:hover {
+  color: #ccffff;
+  background-color: rgba(256, 256, 256, 0.2);
+  border: 1px solid rgba(0, 256, 256, 0.4);
 }
 .abcd-label {
   align-items: start;
   height: fit-content;
+  border: none;
 }
 .abcd-label-padding {
   padding-left: 60px;
@@ -238,32 +365,6 @@ select {
   border: 1px solid rgba(0, 0, 0, 0.9);
   border-bottom-right-radius: 10px;
   border-bottom-left-radius: 10px;
-}
-.text-white {
-  text-align: center;
-  justify-content: center;
-  color: rgba(256, 256, 256, 0.8);
-  font-size: medium;
-}
-.text-black {
-  text-align: center;
-  justify-content: center;
-  color: rgba(256, 128, 128, 0.8);
-  font-size: medium;
-}
-.dd-menu-block {
-  background-color: rgba(192, 256, 256, 0.1);
-  border: 1px solid rgba(0, 0, 0, 0.9);
-  color: white;
-  font-size: 17px;
-  display: flex;
-  align-items: center;
-  min-height: 45px;
-}
-.dd-menu-block:hover {
-  color: #ccffff;
-  background-color: rgba(192, 256, 256, 0.2);
-  border: 1px solid rgba(0, 256, 256, 0.4);
 }
 .menu-block {
   background-color: rgba(128, 128, 128, 0.1);

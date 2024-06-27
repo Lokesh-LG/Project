@@ -75,10 +75,12 @@ function dataReload() {
   baseImagePath = "images/";
   //"file:///Users/myair/Desktop/JavaScript/Project/chess.html.js/images/";
   pieceImagePaths = [
-    "pieces/",
     "piecesClassic/",
-    "piecesWooden/",
+    "pieces/",
     "piecesVirtual/",
+    "piecesCartoon/",
+    "piecesWooden/",
+    "piecesWooden2/",
   ];
   imagePath = baseImagePath + pieceImagePaths[0];
   pieceImageArr = [
@@ -129,7 +131,7 @@ function dataReload() {
       "Change Check Color",
       "Change Previous Moves Color",
       "Change Piece Type",
-      "Label Column & Row",
+      "Show Column & Row",
       "Themes",
     ],
     [
@@ -201,15 +203,23 @@ function createNavbar() {
 }
 function navActions(index) {
   makeLeftBar();
+  makeRightBar();
   if (index == 0) {
     document.getElementById("leftbar").innerHTML = "";
+    document.getElementById("rightbar").innerHTML = "";
     makeTimer();
   } else if (index == 1) {
-    if (time === "") document.getElementById("leftbar").innerHTML = "";
+    if (time === "") {
+      document.getElementById("leftbar").innerHTML = "";
+      document.getElementById("rightbar").innerHTML = "";
+    }
     makeStartBoard();
     makeBoard();
   } else {
-    if (time === "") document.getElementById("leftbar").innerHTML = "";
+    if (time === "") {
+      document.getElementById("leftbar").innerHTML = "";
+      document.getElementById("rightbar").innerHTML = "";
+    }
     showCustomAlert("Under Maintenance");
   }
 }
@@ -257,8 +267,12 @@ function makeCell(row, col) {
   let pieceStr = "";
   let possibleMoveStr = "";
   let extraInfoStr = "";
-  let labelStr =
-    col === 0 ? "<div class = 'p-1 label-col-box'>" + (8 - row) + "</div>" : "";
+  let labelStr = "";
+  if (col === 0) {
+    labelStr = colRowBool
+      ? "<div class = 'p-1 label-col-box'>" + (8 - row) + "</div>"
+      : "<div class = 'p-1 label-col-box'></div>";
+  } else labelStr = "";
   num = showMovesArr.findIndex(function (ele) {
     return ele.row === row && ele.col === col;
   });
@@ -345,7 +359,7 @@ function makeBoard() {
     "<div class = 'containerFrame'>" +
     str +
     "<div class='row row-cols-8 abcd-label-padding'>" +
-    labelArrMap.join("") +
+    (colRowBool ? labelArrMap.join("") : "") +
     "</div></div>";
   if (time === "") {
     displayStr =
@@ -442,6 +456,33 @@ function makeLeftBarDDMenu(index1) {
       );
     })
     .join("");
+}
+function makeRightBar() {
+  let tableArr = rightPgnArr.map(function (ele, index) {
+    if (index % 2 == 0)
+      return (
+        "<tr><th>" + (Math.abs(index / 2) + 1) + "</th><td>" + ele + "</td>"
+      );
+    else return "<td>" + ele + "</td></tr>";
+  });
+  let headStr = "";
+  if (rightPgnArr.length != 0)
+    headStr =
+      "<thead>" +
+      "<div class='btn-group rounded-1' role='group'><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'copyPGN()'><i class='fa-solid fa-copy'></i></button><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'backwardFastPGN()'><i class='fa-solid fa-backward-fast'></i></button><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'backwardStepPGN()'><i class='fa-solid fa-backward-step'></i></button><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'forwardStepPGN()'><i class='fa-solid fa-forward-step'></i></button><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'forwardFastPGN()'><i class='fa-solid fa-forward-fast'></i></button><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'forwardFastPGN()'><i class='fa-solid fa-rotate'></i></button>" +
+      "</thead>";
+  let tableStr =
+    "<table class = 'table-dark table-block'>" +
+    headStr +
+    tableArr.join("") +
+    "</table>";
+  console.log(tableStr);
+  let rightStr =
+    "<div class = 'containerRight'><div class='btn-group-vertical w-100' role='group'><div class='btn-group' role='group'><input type='text' class='btn-name-right' id='opponentName' value='Opponent' placeholder='Opponent'><button class = 'p-3 btn btn-light btn-right w-100 h-100'>Timer</button></div><span class = 'color-line-top'></span><div id = 'missingPieceWhite' class='missing-piece'></div>" +
+    tableStr +
+    "<span class = 'color-line-bottom'></span><div class='btn-group-vertical w-100' role='group'><div class='btn-group' role='group'><input type='text' class='btn-name-right' id='userName' value='You' placeholder='You'><button class = 'p-3 btn btn-light btn-right w-100 h-100'>Timer</button></div><div id = 'missingPieceBlack' class='missing-piece'></div></div></div>";
+  document.getElementById("rightbar").innerHTML = rightStr;
+  missingPiecesUpdate();
 }
 function closeOptionsLeftDD() {
   leftBarOpenStatus = [false, false, false];
@@ -588,6 +629,7 @@ function defaultFunctionSettings() {
   prevcol = -1;
   showMovesArr = [];
   pgnArr = [];
+  rightPgnArr = [];
   pgnStr = "";
   virtualBoardStr = "";
   labelArr = ["a", "b", "c", "d", "e", "f", "g", "h"];
@@ -1024,7 +1066,7 @@ function makeVirtualCell(row, col) {
       "<img src = '" +
       imagePath +
       virtualBoardArr[row][col].key +
-      "' onclick = hello(" +
+      "' width = '60' height = '60' onclick = hello(" +
       row +
       "," +
       col +
@@ -1321,13 +1363,28 @@ function missingPiecesUpdate() {
   let missingPiecesCountArr = pieces.map(function (ele) {
     return pointCountInit[ele] - pointCount[ele];
   });
-  let strMap = missingPiecesCountArr.map(function (ele, index) {
-    return ("<img src = '" + imagePath + pieceImageArr[index] + "'>").repeat(
-      ele
-    );
+  let strMapBlack = missingPiecesCountArr.map(function (ele, index) {
+    if (index <= 5)
+      return (
+        "<img src = '" +
+        imagePath +
+        pieceImageArr[index] +
+        "' width ='30' height='30'>"
+      ).repeat(ele);
   });
-  document.getElementById("missingPiece").innerHTML =
-    strMap.join("") + pointDifference();
+  let strMapWhite = missingPiecesCountArr.map(function (ele, index) {
+    if (index > 5)
+      return (
+        "<img src = '" +
+        imagePath +
+        pieceImageArr[index] +
+        "' width ='30' height='30'>"
+      ).repeat(ele);
+  });
+  document.getElementById("missingPieceBlack").innerHTML =
+    strMapBlack.join("") + pointDifference("black");
+  document.getElementById("missingPieceWhite").innerHTML =
+    strMapWhite.join("") + pointDifference("white");
 }
 function diffPoints() {
   return boardArr.reduce(function (ans, ele) {
@@ -1339,13 +1396,13 @@ function diffPoints() {
     );
   }, 0);
 }
-function pointDifference() {
+function pointDifference(color) {
   let pointsStr = "<br>";
   let evalNumber = diffPoints();
-  if (evalNumber > 0) {
-    pointsStr = "<p class = 'text-white'>+" + evalNumber + "(white)</p>";
-  } else if (evalNumber < 0) {
-    pointsStr = "<p class = 'text-black'>+" + evalNumber + "(black)</p>";
+  if (evalNumber > 0 && color === "white") {
+    pointsStr = "+" + evalNumber;
+  } else if (evalNumber < 0 && color === "black") {
+    pointsStr = "+" + Math.abs(evalNumber);
   } else {
     pointsStr = "";
   }
@@ -1353,12 +1410,53 @@ function pointDifference() {
 }
 
 //PGN Encoder Decoder
+// function makePGN() {
+//   pgnStr = pgnArr.reduce(function (ans, ele) {
+//     let notation = "";
+//     let colPgn = ["a", "b", "c", "d", "e", "f", "g", "h"];
+//     if (ele.color === "white")
+//       notation += Math.floor(ele.moveNumber / 2) + 1 + ".";
+//     if (!ele.castleBool) {
+//       if (ele.piece === "knight") notation += "N";
+//       else if (ele.piece === "rook") notation += "R";
+//       else if (ele.piece === "bishop") notation += "B";
+//       else if (ele.piece === "king") notation += "K";
+//       else if (ele.piece === "queen") notation += "Q";
+//       if (ele.ambiguityBool)
+//         if (ele.ambiguityBoolColSame) notation += String(8 - ele.prevrow);
+//         else notation += colPgn[ele.prevcol];
+//       if (Object.keys(ele.cutPiece).length != 0) {
+//         if (ele.piece === "pawn") notation += colPgn[ele.prevcol];
+//         notation += "x";
+//       }
+//       notation += colPgn[ele.newcol];
+//       notation += String(8 - ele.newrow);
+//       if (ele.pawnPromotion) {
+//         notation += "=";
+//         if (ele.pawnPromotedto === "knight") notation += "N";
+//         else if (ele.pawnPromotedto === "rook") notation += "R";
+//         else if (ele.pawnPromotedto === "bishop") notation += "B";
+//         else if (ele.pawnPromotedto === "king") notation += "K";
+//         else if (ele.pawnPromotedto === "queen") notation += "Q";
+//       }
+//       if (ele.checkBool) notation += "+";
+//     } else if (ele.newcol === 6) {
+//       notation += "O-O";
+//     } else if (ele.newcol === 2) {
+//       notation += "O-O-O";
+//     }
+//     notation += " ";
+//     return ans + notation;
+//   }, " ");
+// }
 function makePGN() {
+  rightPgnArr = [];
   pgnStr = pgnArr.reduce(function (ans, ele) {
     let notation = "";
+    let notationExtra = "";
     let colPgn = ["a", "b", "c", "d", "e", "f", "g", "h"];
     if (ele.color === "white")
-      notation += Math.floor(ele.moveNumber / 2) + 1 + ".";
+      notationExtra = Math.floor(ele.moveNumber / 2) + 1 + ".";
     if (!ele.castleBool) {
       if (ele.piece === "knight") notation += "N";
       else if (ele.piece === "rook") notation += "R";
@@ -1388,9 +1486,11 @@ function makePGN() {
     } else if (ele.newcol === 2) {
       notation += "O-O-O";
     }
-    notation += " ";
+    rightPgnArr.push(notation);
+    notation = notationExtra + notation + " ";
     return ans + notation;
   }, " ");
+  makeRightBar();
 }
 function importGame() {
   makeStartBoard();
@@ -1722,7 +1822,7 @@ function defaultBoardUI1() {
     clr1x +
     "') disabled></input></div><div class='input-group input-group-pkr w-100'><div class='input-group-text menu-block  menu-block-highlight-width-default'>Highlighted Color 2:</div><input type='color' class='form-control form-control-color-pkr' id='colorPicker4' value='" +
     clr2x +
-    "' disabled></input></div></div>";
+    "' disabled></input></div><div class='btn-group-vertical w-100' role='group'><div class='input-group input-group-pkr w-100'><div class='form-check form-switch menu-block w-100'><label class='form-check-label' for='colRowSwitch'> Column & Row :</label><input class='form-check-input' type='checkbox' role='switch' id='colRowSwitch' checked disabled></div></div></div></div>";
   document.getElementById("dd1menu").innerHTML = menuStr;
 }
 function changeBoardColorUI() {
@@ -1851,6 +1951,14 @@ function changePieceType() {
     baseImagePath +
     pieceImagePaths[3] +
     pieceImageArr[0] +
+    "' class = 'radio-img-piece'></label><input type='radio' class='btn-check' name='radio1' id='r4' autocomplete='off' ><label class='btn btn-outline-light' for='r4'><img src = '" +
+    baseImagePath +
+    pieceImagePaths[4] +
+    pieceImageArr[0] +
+    "' class = 'radio-img-piece'></label><input type='radio' class='btn-check' name='radio1' id='r5' autocomplete='off' ><label class='btn btn-outline-light' for='r5'><img src = '" +
+    baseImagePath +
+    pieceImagePaths[5] +
+    pieceImageArr[0] +
     "' class = 'radio-img-piece'></label></div>";
   document.getElementById("dd1menu").innerHTML = menuStr;
   const radioButtons = document.querySelectorAll('input[name="radio1"]');
@@ -1869,8 +1977,34 @@ function pieceTypeChange(id) {
     imagePath = baseImagePath + pieceImagePaths[2];
   } else if (id === "r3") {
     imagePath = baseImagePath + pieceImagePaths[3];
+  } else if (id === "r4") {
+    imagePath = baseImagePath + pieceImagePaths[4];
+  } else if (id === "r5") {
+    imagePath = baseImagePath + pieceImagePaths[5];
   }
   makeBoard();
+}
+function showColRow() {
+  let str = colRowBool ? "checked" : "";
+  let menuStr =
+    "<div class='btn-group-vertical w-100' role='group'><div class='input-group input-group-pkr w-100'><div class='form-check form-switch menu-block w-100'><label class='form-check-label' for='colRowSwitch'>Column & Row :</label><input class='form-check-input' type='checkbox' role='switch' id='colRowSwitch' " +
+    str +
+    "></div></div></div>";
+  document.getElementById("dd1menu").innerHTML = menuStr;
+  const colRowInput = document.getElementById("colRowSwitch");
+  colRowInput.addEventListener("change", function () {
+    if (this.checked) {
+      colRowBool = true;
+    } else {
+      colRowBool = false;
+    }
+    makeBoard();
+  });
+}
+function changeThemesUI() {
+  showCustomAlert("Under Maintenance");
+  document.getElementById("dd1").value = leftBarArrAll[0];
+  document.getElementById("dd1menu").innerHTML = "";
 }
 
 //LeftBar dd2
@@ -2018,6 +2152,8 @@ function makeDefaultColors() {
 }
 function makeDefaultUISettings1() {
   makeDefaultColors();
+  colRowBoolInitial = true;
+  colRowBool = colRowBoolInitial;
   imagePath = baseImagePath + pieceImagePaths[0];
 }
 function makeDefaultUISettings2() {
