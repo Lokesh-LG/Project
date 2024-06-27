@@ -211,6 +211,22 @@ select {
   width: 26%;
   margin-top: 60px;
 }
+.right-bar-th {
+  width: 16.6%;
+  text-align: center;
+}
+.right-bar-td {
+  width: 41.7%;
+}
+.right-bar-td-even {
+  padding-left: 15%;
+}
+.right-bar-td-odd {
+  padding-left: 6%;
+}
+.right-bar-td:focus {
+  background-color: rgba(0, 256, 256, 0.5);
+}
 .color-line-top {
   height: 5px;
   border: none;

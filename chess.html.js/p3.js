@@ -125,25 +125,25 @@ function dataReload() {
   // leftBarArr3 = ["Show PGN", "Import PGN", "No More Changes"];
   leftBarArr = [
     [
-      { txt: "Default", icon: "fa-circle-info" },
-      { txt: "Change Board Color", icon: "fa-paperclip" },
-      { txt: "Change Highlighted Color", icon: "fa-clipboard" },
-      { txt: "Change Check Color", icon: "fa-circle-info" },
-      { txt: "Change Previous Moves Color", icon: "fa-paperclip" },
-      { txt: "Change Piece Type", icon: "fa-clipboard" },
-      { txt: "Show Column & Row", icon: "fa-circle-info" },
-      { txt: "Themes", icon: "fa-paperclip" },
+      { txt: "Default", icon: "fa-user" },
+      { txt: "Change Board Color", icon: "fa-palette" },
+      { txt: "Change Highlighted Color", icon: "fa-highlighter" },
+      { txt: "Change Check Color", icon: "fa-circle-plus" },
+      { txt: "Change Previous Moves Color", icon: "fa-circle-chevron-left" },
+      { txt: "Change Piece Type", icon: "fa-chess-pawn" },
+      { txt: "Show Column & Row", icon: "fa-eye" },
+      { txt: "Themes", icon: "fa-chess" },
     ],
     [
-      { txt: "Default", icon: "fa-circle-info" },
-      { txt: "Highlight Previous Moves", icon: "fa-paperclip" },
-      { txt: "Highlight Selected Piece", icon: "fa-clipboard" },
-      { txt: "Show Legal Moves", icon: "fa-circle-info" },
-      { txt: "Change Valid Moves Dot", icon: "fa-clipboard" },
+      { txt: "Default", icon: "fa-user" },
+      { txt: "Highlight Previous Moves", icon: " fa-hand-point-left" },
+      { txt: "Highlight Selected Piece", icon: "fa-hand-pointer" },
+      { txt: "Show Legal Moves", icon: "fa-gavel" },
+      { txt: "Change Valid Moves Dot", icon: "fa-circle-dot" },
     ],
     [
-      { txt: "Show PGN", icon: "fa-paperclip" },
-      { txt: "Import PGN", icon: "fa-clipboard" },
+      { txt: "Show PGN", icon: "fa-note-sticky" },
+      { txt: "Import PGN", icon: "fa-file-import" },
     ],
   ];
   leftBarOpenStatus = [false, false, false];
@@ -223,6 +223,7 @@ function navActions(index) {
       document.getElementById("leftbar").innerHTML = "";
       document.getElementById("rightbar").innerHTML = "";
     }
+    switchNavTab_LoadGame();
     showCustomAlert("Under Maintenance");
   }
 }
@@ -473,15 +474,22 @@ function makeRightBar() {
   let tableArr = rightPgnArr.map(function (ele, index) {
     if (index % 2 == 0)
       return (
-        "<tr><th>" + (Math.abs(index / 2) + 1) + "</th><td>" + ele + "</td>"
+        "<tr><th class ='right-bar-th'>" +
+        (Math.abs(index / 2) + 1) +
+        "</th><td class = 'right-bar-td right-bar-td-even'>" +
+        ele +
+        "</td>"
       );
-    else return "<td>" + ele + "</td></tr>";
+    else
+      return (
+        "<td class = 'right-bar-td right-bar-td-odd'>" + ele + "</td></tr>"
+      );
   });
   let headStr = "";
   if (rightPgnArr.length != 0)
     headStr =
       "<thead>" +
-      "<div class='btn-group rounded-1' role='group'><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'copyPGN()'><i class='fa-solid fa-copy'></i></button><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'backwardFastPGN()'><i class='fa-solid fa-backward-fast'></i></button><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'backwardStepPGN()'><i class='fa-solid fa-backward-step'></i></button><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'forwardStepPGN()'><i class='fa-solid fa-forward-step'></i></button><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'forwardFastPGN()'><i class='fa-solid fa-forward-fast'></i></button><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'forwardFastPGN()'><i class='fa-solid fa-rotate'></i></button>" +
+      "<div class='btn-group rounded-1' role='group'><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'copyPGN()'><i class='fa-solid fa-copy'></i></button><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'backwardFastPGN()'><i class='fa-solid fa-backward-fast'></i></button><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'backwardStepPGN()'><i class='fa-solid fa-backward-step'></i></button><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'forwardStepPGN()'><i class='fa-solid fa-forward-step'></i></button><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'forwardFastPGN()'><i class='fa-solid fa-forward-fast'></i></button><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'flipBoard()'><i class='fa-solid fa-rotate'></i></button>" +
       "</thead>";
   let tableStr =
     "<table class = 'table-dark table-block'>" +
@@ -667,9 +675,9 @@ function defaultFunctionSettings() {
     castleDisable: -1,
   };
   leftBarArrAll = [
-    { txt: "Board Settings", icon: "fa-cog" },
-    { txt: "Move Settings", icon: "fa-cog" },
-    { txt: "Game Settings", icon: "fa-cog" },
+    { txt: "Board Settings", icon: "fa-chess-board" },
+    { txt: "Move Settings", icon: "fa-arrows-up-down-left-right" },
+    { txt: "Game Settings", icon: "fa-book" },
   ];
   console.clear();
 }
@@ -1081,7 +1089,7 @@ function makeVirtualCell(row, col) {
       "<img src = '" +
       imagePath +
       virtualBoardArr[row][col].key +
-      "' width = '60' height = '60' onclick = hello(" +
+      "' height = '60' onclick = hello(" +
       row +
       "," +
       col +
@@ -1312,6 +1320,10 @@ function checkAmbiguityLastMove(row, col, value) {
   return false;
 }
 function undoMove() {
+  if (virtualBoardStr != "") {
+    showCustomAlert("Please Select Piece To Promote");
+    return;
+  }
   let lastMoveJSON = pgnArr.pop();
   boardArr[lastMoveJSON.prevrow][lastMoveJSON.prevcol] = lastMoveJSON.key;
   moveCount--;
@@ -1384,7 +1396,7 @@ function missingPiecesUpdate() {
         "<img src = '" +
         imagePath +
         pieceImageArr[index] +
-        "' width ='30' height='30'>"
+        "' height ='40'>"
       ).repeat(ele);
   });
   let strMapWhite = missingPiecesCountArr.map(function (ele, index) {
@@ -1393,7 +1405,7 @@ function missingPiecesUpdate() {
         "<img src = '" +
         imagePath +
         pieceImageArr[index] +
-        "' width ='30' height='30'>"
+        "' height ='40'>"
       ).repeat(ele);
   });
   document.getElementById("missingPieceBlack").innerHTML =
@@ -1984,6 +1996,10 @@ function changePieceType() {
   });
 }
 function pieceTypeChange(id) {
+  if (virtualBoardStr != "") {
+    showCustomAlert("Please Select Piece To Promote");
+    return;
+  }
   if (id === "r0") {
     imagePath = baseImagePath + pieceImagePaths[0];
   } else if (id === "r1") {
@@ -1998,6 +2014,7 @@ function pieceTypeChange(id) {
     imagePath = baseImagePath + pieceImagePaths[5];
   }
   makeBoard();
+  makeRightBar();
 }
 function showColRow() {
   let str = colRowBool ? "checked" : "";
@@ -2153,6 +2170,41 @@ function importPGNUI() {
 }
 
 //UI RightBar Actions
+function copyPGN() {
+  const textToCopy = pgnStr;
+  navigator.clipboard
+    .writeText(textToCopy)
+    .then(function () {
+      showCustomAlert("PGN copied to clipboard successfully!");
+    })
+    .catch(function (err) {
+      showCustomAlert("Could not copy text: ", err);
+    });
+}
+function backwardFastPGN() {
+  a = 10;
+}
+function backwardStepPGN() {
+  a = 10;
+}
+function forwardStepPGN() {
+  a = 10;
+}
+function forwardFastPGN() {
+  a = 10;
+}
+function flipBoard() {
+  let flipBoardArr = boardArrLine.map(function (ele) {
+    return [...boardArrLine];
+  });
+  for (let i = 0; i <= 7; i++) {
+    for (let j = 0; j <= 7; j++) {
+      flipBoardArr[i][j] = boardArr[7 - i][7 - j];
+    }
+  }
+  boardArr = flipBoardArr;
+  makeBoard();
+}
 
 //UI Building
 function makeDefaultColors() {
