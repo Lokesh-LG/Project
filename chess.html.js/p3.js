@@ -125,23 +125,26 @@ function dataReload() {
   // leftBarArr3 = ["Show PGN", "Import PGN", "No More Changes"];
   leftBarArr = [
     [
-      "Default",
-      "Change Board Color",
-      "Change Highlighted Color",
-      "Change Check Color",
-      "Change Previous Moves Color",
-      "Change Piece Type",
-      "Show Column & Row",
-      "Themes",
+      { txt: "Default", icon: "fa-circle-info" },
+      { txt: "Change Board Color", icon: "fa-paperclip" },
+      { txt: "Change Highlighted Color", icon: "fa-clipboard" },
+      { txt: "Change Check Color", icon: "fa-circle-info" },
+      { txt: "Change Previous Moves Color", icon: "fa-paperclip" },
+      { txt: "Change Piece Type", icon: "fa-clipboard" },
+      { txt: "Show Column & Row", icon: "fa-circle-info" },
+      { txt: "Themes", icon: "fa-paperclip" },
     ],
     [
-      "Default",
-      "Highlight Previous Moves",
-      "Highlight Selected Piece",
-      "Show Legal Moves",
-      "Change Valid Moves Dot",
+      { txt: "Default", icon: "fa-circle-info" },
+      { txt: "Highlight Previous Moves", icon: "fa-paperclip" },
+      { txt: "Highlight Selected Piece", icon: "fa-clipboard" },
+      { txt: "Show Legal Moves", icon: "fa-circle-info" },
+      { txt: "Change Valid Moves Dot", icon: "fa-clipboard" },
     ],
-    ["Show PGN", "Import PGN"],
+    [
+      { txt: "Show PGN", icon: "fa-paperclip" },
+      { txt: "Import PGN", icon: "fa-clipboard" },
+    ],
   ];
   leftBarOpenStatus = [false, false, false];
 }
@@ -429,7 +432,7 @@ function makeLeftBar(actionsData) {
 }
 function makeLeftDD(ele, index1, isOpen) {
   let str =
-    "<button class='p-3 btn text-start btn-light btn-block h-100' onclick='showOptionsLeftDD(" +
+    "<button class='p-3 btn btn-light btn-block h-100' onclick='showOptionsLeftDD(" +
     index1 +
     ",-1)' >" +
     "<i class='fas  " +
@@ -456,7 +459,11 @@ function makeLeftBarDDMenu(index1) {
         "," +
         index2 +
         ")' >" +
-        ele +
+        "<i class='fas  " +
+        ele.icon +
+        "'></i>" +
+        "&nbsp;&nbsp;" +
+        ele.txt +
         "</button>"
       );
     })
