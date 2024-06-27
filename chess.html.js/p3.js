@@ -439,7 +439,7 @@ function makeLeftDD(txt, index1, isOpen) {
     (index1 + 1) +
     "menu'>" +
     (isOpen ? makeLeftBarDDMenu(index1) : "") +
-    "</div>";
+    "</div><div class = 'height-break'></div>";
   return str;
 }
 function makeLeftBarDDMenu(index1) {
