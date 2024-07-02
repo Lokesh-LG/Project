@@ -411,7 +411,8 @@ function confirmedTime() {
 //     "</select><div id = 'dd3menu' class = 'w-100'></div><div class = 'height-break'></div><div id = 'missingPiece' class ='missing-piece'></div></div>";
 //   document.getElementById("leftbar").innerHTML = leftStr;
 // }
-function makeLeftBar(actionsData) {
+function makeLeftBar(leftBarInstance) {
+  let leftBarAllInstance = leftBarInstance ? leftBarInstance : leftBarArrAll;
   let missingPieceElement = document.getElementById("missingPiece");
   missingPieceStr = missingPieceElement ? missingPieceElement.innerHTML : "";
   leftStr =
@@ -420,7 +421,7 @@ function makeLeftBar(actionsData) {
     "<button class = 'p-3 btn btn-light btn-block-red w-100 h-100' onclick = 'undoMove()'><i class='fa-solid fa-left-long'></i> Undo Move</button>" +
     "<button class = 'p-3 btn btn-light btn-green w-100 h-100' onclick = 'redoMove()'><i class='fa-solid fa-right-long'></i> Redo Move</button></div>" +
     "<div class = 'height-break'></div>";
-  leftStr += leftBarArrAll
+  leftStr += leftBarAllInstance
     .map(function (ele, index) {
       return makeLeftDD(ele, index, leftBarOpenStatus[index]);
     })
@@ -433,7 +434,7 @@ function makeLeftBar(actionsData) {
 }
 function makeLeftDD(ele, index1, isOpen) {
   let str =
-    "<button class='p-3 btn btn-light btn-block h-100' onclick='showOptionsLeftDD(" +
+    "<button class='p-3 btn btn-light left-bar-block h-100' onclick='showOptionsLeftDD(" +
     index1 +
     ",-1)' >" +
     "<i class='fas  " +
@@ -441,9 +442,12 @@ function makeLeftDD(ele, index1, isOpen) {
     "'></i>" +
     "&nbsp;&nbsp;" +
     ele.txt +
-    "<i class='align-right-fa-icon fas " +
-    (isOpen ? "fa-caret-up" : "fa-caret-down") +
-    "'></i></button>" +
+    (ele.txt === leftBarArrAll[index1].txt
+      ? "<i class='align-right-fa-icon fas " +
+        (isOpen ? "fa-caret-up" : "fa-caret-down") +
+        "'></i>"
+      : "") +
+    "</button>" +
     "<div class='w-100' role='group' id='dd" +
     (index1 + 1) +
     "menu'>" +
@@ -472,6 +476,7 @@ function makeLeftBarDDMenu(index1) {
 }
 function makeRightBar() {
   let tableStr = "";
+  if (rightPgnArr.length === 1) rightPgnArr.push(" ");
   let tableArr = rightPgnArr.map(function (ele, index) {
     if (index % 2 == 0)
       return (
@@ -493,19 +498,22 @@ function makeRightBar() {
     "<thead>" +
     "<div class='btn-group rounded-1' role='group'><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'copyPGN()'><i class='fa-solid fa-copy'></i></button><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'backwardFastPGN()'><i class='fa-solid fa-backward-fast'></i></button><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'backwardStepPGN()'><i class='fa-solid fa-backward-step'></i></button><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'forwardStepPGN()'><i class='fa-solid fa-forward-step'></i></button><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'forwardFastPGN()'><i class='fa-solid fa-forward-fast'></i></button><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'flipBoard()'><i class='fa-solid fa-rotate'></i></button></div>" +
     "</thead>";
-  if (rightPgnArr.length != 0 && rightPgnArr.length != 1) {
+  if (rightPgnArr.length != 0) {
     tableStr =
       headStr +
-      "<div class = 'table-container'><table class = 'table-dark table-block'>" +
+      "<div class = 'table-container'><table class = 'table-dark table-block'  id='showLeftBarMoves'>" +
       tableArr.join("") +
       "</table></div>";
   }
-  console.log(tableStr);
+  //console.log(tableStr);
   let rightStr =
     "<div class = 'containerRight'><div id = 'missingPieceWhite' class='missing-piece-top'></div><div class='btn-group-vertical w-100' role='group'><div class='btn-group' role='group'><input type='text' class='btn-name-right' id='opponentName' value='Opponent' placeholder='Opponent'><button class = 'p-3 btn btn-light btn-right w-100 h-100'>Timer</button></div><span class = 'color-line-top'></span>" +
     tableStr +
     "<span class = 'color-line-bottom'></span><div class='btn-group-vertical w-100' role='group'><div class='btn-group' role='group'><input type='text' class='btn-name-right' id='userName' value='You' placeholder='You'><button class = 'p-3 btn btn-light btn-right w-100 h-100'>Timer</button></div><div id = 'missingPieceBlack' class='missing-piece-bottom'></div></div></div>";
-  document.getElementById("rightbar").innerHTML = rightStr;
+
+  if (rightPgnArr && rightPgnArr.length > 2) {
+    document.getElementById("showLeftBarMoves").innerHTML = tableArr.join("");
+  } else document.getElementById("rightbar").innerHTML = rightStr;
   if (rightPgnArr.length != 0 && rightPgnArr.length != 1) {
     let tableContainer = document.querySelector(".table-container");
     tableContainer.scrollTop = tableContainer.scrollHeight;
@@ -523,6 +531,9 @@ function showOptionsLeftDD(index1, index2) {
     });
     makeLeftBar();
   } else {
+    let leftBarAllInstance = [...leftBarArrAll];
+    leftBarAllInstance[index1] = leftBarArr[index1][index2];
+    makeLeftBar(leftBarAllInstance);
     ddActionsNew(index1, index2);
     //makeLeftBar({ dd: index1, option: index2, strMenu: strMenu });
   }
@@ -701,7 +712,7 @@ function defaultFunctionSettings() {
 //Board Logic
 function boardClick(row, col) {
   closeOptionsLeftDD();
-  console.log(prevrow, prevcol, row, col);
+  //console.log(prevrow, prevcol, row, col);
   if (prevrow === -1 || prevcol === -1) {
     if (
       Object.keys(boardArr[row][col]).length != 0 &&
@@ -2328,4 +2339,100 @@ function switchNavTab_LoadGame() {
 function minimax() {
   if (moveCount % 2 === 1) {
   }
+}
+
+//move
+let movesSimulated = { do: 0, undo: 0 };
+function getPiecesofOneColor(boardPosition) {
+  return boardPosition.reduce(
+    function (acc, curr, row) {
+      curr.reduce(function (acc, curr1, col) {
+        if (curr1.color) {
+          acc[curr1.color].pieces.push({
+            ...curr1,
+            start: { row: row, col: col },
+          });
+          acc[curr1.color].totalPoints += curr1.points;
+        }
+        return acc;
+      }, acc);
+      return acc;
+    },
+    {
+      white: { pieces: [], totalPoints: 0 },
+      black: { pieces: [], totalPoints: 0 },
+    }
+  );
+}
+function generateAllPossibleMoves(boardPosition, moveColor) {
+  let colorWisePosition = getPiecesofOneColor(boardPosition);
+  let notMoveColor = moveColor === "white" ? "black" : "white";
+  let possibleMoves = [];
+  colorWisePosition[moveColor].pieces.map(function (piece) {
+    prevrow = piece.start.row;
+    prevcol = piece.start.col;
+    showValidMoves();
+    prevrow = -1;
+    prevcol = -1;
+    showMovesArr.map(function (mv) {
+      piece.end = mv;
+      let oppositePiece = colorWisePosition[notMoveColor].pieces.find(function (
+        ele
+      ) {
+        return ele.start.row === mv.row && ele.start.col === mv.col;
+      });
+      piece.score =
+        colorWisePosition[moveColor].totalPoints -
+        colorWisePosition[notMoveColor].totalPoints +
+        (oppositePiece ? oppositePiece.points : 0);
+      possibleMoves.push({ ...piece });
+      return "";
+    });
+    return "";
+  });
+  return possibleMoves;
+}
+function playMoveSimulator(newMoveSimulator) {
+  movesSimulated.do++;
+  prevrow = -1;
+  prevcol = -1;
+  boardClick(newMoveSimulator.start.row, newMoveSimulator.start.col);
+  boardClick(newMoveSimulator.end.row, newMoveSimulator.end.col);
+}
+function playToDepth(boardPosition, depth, moveColor) {
+  let possibleMoves = generateAllPossibleMoves(boardPosition, moveColor);
+  possibleMoves.splice(2, possibleMoves.length - 2);
+  if (depth === 1) {
+    let selectedMove = selectBestMove(possibleMoves);
+    console.log("selectedMove", selectedMove);
+    return selectedMove;
+  }
+  let arr = [];
+  for (let i = 0; i < possibleMoves.length; i++) {
+    let oneMove = possibleMoves[i];
+    playMoveSimulator(oneMove);
+    let notMoveColor = moveColor === "white" ? "black" : "white";
+    arr.push(playToDepth(boardPosition, depth - 1, notMoveColor));
+    undoSimulatedMove();
+  }
+  console.log(arr);
+  let selectedMove = selectBestMove(arr);
+  console.log("selectedMove", selectedMove);
+  return selectedMove;
+}
+function selectBestMove(possibleMoves) {
+  return possibleMoves.reduce(function (acc, curr) {
+    if (curr.score > acc.score) acc = curr;
+    return acc;
+  });
+}
+function undoSimulatedMove() {
+  undoMove();
+  movesSimulated.undo++;
+}
+function autoPlay(depth) {
+  movesSimulated = { do: 0, undo: 0 };
+  let newMove = playToDepth(boardArr, depth, "white");
+  console.log(movesSimulated);
+  console.log(newMove);
 }
