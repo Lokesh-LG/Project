@@ -35,6 +35,9 @@ function dataReload() {
     { icon: "fa-solid fa-pen-to-square", animation: "fa-fade" },
     { icon: "fa-solid fa-computer", animation: "fa-beat" },
   ];
+  bodyImageURL = [
+    "https://img.freepik.com/free-photo/abstract-fire-desktop-wallpaper-realistic-blazing-flame-image_53876-147448.jpg?size=626&ext=jpg&ga=GA1.1.1546980028.1719792000&semt=ais_user",
+  ];
   navArr = ["Time Limit", "New Game", "Analysis", "Computer"];
   chessArr = [];
   temp = {};
@@ -73,7 +76,6 @@ function dataReload() {
     "<div class='icon-label2'><i class='fa-solid fa-sun icon' style='color:#FDDA0D'></i>",
   ];
   baseImagePath = "images/";
-  //"file:///Users/myair/Desktop/JavaScript/Project/chess.html.js/images/";
   pieceImagePaths = [
     "piecesClassic/",
     "pieces/",
@@ -103,33 +105,14 @@ function dataReload() {
   });
   timeLabelArr = ["Bullet", "Blitz", "Rapid", "Daily"];
   displayStr = "";
-  // leftBarArr1 = [
-  //   "Default",
-  //   "Change Board Color",
-  //   "Change Highlighted Color",
-  //   "Change Check Color",
-  //   "Change Previous Moves Color",
-  //   "Change Piece Type",
-  //   "Label Column & Row",
-  //   "Themes",
-  //   "No More Changes",
-  // ];
-  // leftBarArr2 = [
-  //   "Default",
-  //   "Highlight Previous Moves",
-  //   "Highlight Selected Piece",
-  //   "Show Legal Moves",
-  //   "Change Valid Moves Dot",
-  //   "No More Changes",
-  // ];
-  // leftBarArr3 = ["Show PGN", "Import PGN", "No More Changes"];
   leftBarArr = [
     [
       { txt: "Default", icon: "fa-user" },
       { txt: "Change Board Color", icon: "fa-palette" },
+      { txt: "Add Background Image", icon: "fa-image" },
       { txt: "Change Highlighted Color", icon: "fa-highlighter" },
-      { txt: "Change Check Color", icon: "fa-circle-plus" },
-      { txt: "Change Previous Moves Color", icon: "fa-circle-chevron-left" },
+      { txt: "Change Check Color", icon: "fa-plus" },
+      { txt: "Change Previous Moves Color", icon: "fa-circle-arrow-left" },
       { txt: "Change Piece Type", icon: "fa-chess-pawn" },
       { txt: "Show Column & Row", icon: "fa-eye" },
       { txt: "Themes", icon: "fa-chess" },
@@ -267,87 +250,87 @@ function btnTimeActions(index) {
     "<br><button type='button' class='p-3 btn btn-light btn-block w-100 h-100 btn-confirm' onclick = switchNavTab_LoadGame()>Play Game</button>";
   document.getElementById("info").innerHTML = str;
 }
-function makeCell(row, col) {
-  let pieceStr = "";
-  let possibleMoveStr = "";
-  let extraInfoStr = "";
-  let labelStr = "";
-  if (col === 0) {
-    labelStr = colRowBool
-      ? "<div class = 'p-1 label-col-box'>" + (8 - row) + "</div>"
-      : "<div class = 'p-1 label-col-box'></div>";
-  } else labelStr = "";
-  num = showMovesArr.findIndex(function (ele) {
-    return ele.row === row && ele.col === col;
-  });
-  if (Object.keys(boardArr[row][col]).length != 0)
-    pieceStr =
-      "<img src = '" +
-      imagePath +
-      boardArr[row][col].key +
-      "' onclick = hello(" +
-      row +
-      "," +
-      col +
-      ")>";
-  if (num != -1 && legalBool)
-    if (Object.keys(boardArr[row][col]).length != 0)
-      possibleMoveStr =
-        "<svg xmlns='http://www.w3.org/2000/svg' class = 'possible-move-square' viewBox='0 0 80 80' width='80' height='80'><circle cx='40' cy='40' r=" +
-        highlightDotRadius +
-        " fill='rgba(256, 100, 100, 0.4)'/></svg>";
-    else
-      possibleMoveStr =
-        "<svg xmlns='http://www.w3.org/2000/svg' class = 'possible-move-square' viewBox='0 0 80 80' width='80' height='80'><circle cx='40' cy='40' r=" +
-        highlightDotRadius +
-        " fill='rgba(100, 100, 100, 0.4)'/></svg>";
-  if (row === 0 && col === 0) {
-    extraInfoStr = "-top-start";
-  } else if (row === 7 && col === 0) {
-    extraInfoStr = "-bottom-start";
-  } else if (row === 0 && col === 7) {
-    extraInfoStr = "-top-end";
-  } else if (row === 7 && col === 7) {
-    extraInfoStr = "-bottom-end";
-  }
-  if (prevrow === row && prevcol === col && highlightPieceBool)
-    cellColor = (row + col) % 2 === 0 ? clr1x : clr2x;
-  else if (
-    pgnArr.length != 0 &&
-    pgnArr[pgnArr.length - 1].prevrow === row &&
-    pgnArr[pgnArr.length - 1].prevcol === col &&
-    highlightPreviousBool
-  )
-    cellColor = (row + col) % 2 === 0 ? clr1p : clr2p;
-  else if (
-    pgnArr.length != 0 &&
-    pgnArr[pgnArr.length - 1].newrow === row &&
-    pgnArr[pgnArr.length - 1].newcol === col &&
-    highlightPreviousBool
-  )
-    cellColor = (row + col) % 2 === 0 ? clr1p : clr2p;
-  else cellColor = (row + col) % 2 === 0 ? clr1 : clr2;
-  if (underCheck.bool && underCheck.posx === row && underCheck.posy === col) {
-    cellColor = (row + col) % 2 === 0 ? clr1c : clr2c;
-    if (prevrow === row && prevcol === col && highlightPieceBool)
-      cellColor = (row + col) % 2 === 0 ? clr1x : clr2x;
-  }
-  return (
-    labelStr +
-    "<div class= 'cellBox cellBorder" +
-    extraInfoStr +
-    "' onclick = boardClick(" +
-    row +
-    "," +
-    col +
-    ") style='background-color: " +
-    cellColor +
-    "'>" +
-    pieceStr +
-    possibleMoveStr +
-    "</div>"
-  );
-}
+// function makeCell(row, col) {
+//   let pieceStr = "";
+//   let possibleMoveStr = "";
+//   let extraInfoStr = "";
+//   let labelStr = "";
+//   if (col === 0) {
+//     labelStr = colRowBool
+//       ? "<div class = 'p-1 label-col-box'>" + (8 - row) + "</div>"
+//       : "<div class = 'p-1 label-col-box'></div>";
+//   } else labelStr = "";
+//   num = showMovesArr.findIndex(function (ele) {
+//     return ele.row === row && ele.col === col;
+//   });
+//   if (Object.keys(boardArr[row][col]).length != 0)
+//     pieceStr =
+//       "<img src = '" +
+//       imagePath +
+//       boardArr[row][col].key +
+//       "' onclick = hello(" +
+//       row +
+//       "," +
+//       col +
+//       ")>";
+//   if (num != -1 && legalBool)
+//     if (Object.keys(boardArr[row][col]).length != 0)
+//       possibleMoveStr =
+//         "<svg xmlns='http://www.w3.org/2000/svg' class = 'possible-move-square' viewBox='0 0 80 80' width='80' height='80'><circle cx='40' cy='40' r=" +
+//         highlightDotRadius +
+//         " fill='rgba(256, 100, 100, 0.4)'/></svg>";
+//     else
+//       possibleMoveStr =
+//         "<svg xmlns='http://www.w3.org/2000/svg' class = 'possible-move-square' viewBox='0 0 80 80' width='80' height='80'><circle cx='40' cy='40' r=" +
+//         highlightDotRadius +
+//         " fill='rgba(100, 100, 100, 0.4)'/></svg>";
+//   if (row === 0 && col === 0) {
+//     extraInfoStr = "-top-start";
+//   } else if (row === 7 && col === 0) {
+//     extraInfoStr = "-bottom-start";
+//   } else if (row === 0 && col === 7) {
+//     extraInfoStr = "-top-end";
+//   } else if (row === 7 && col === 7) {
+//     extraInfoStr = "-bottom-end";
+//   }
+//   if (prevrow === row && prevcol === col && highlightPieceBool)
+//     cellColor = (row + col) % 2 === 0 ? clr1x : clr2x;
+//   else if (
+//     pgnArr.length != 0 &&
+//     pgnArr[pgnArr.length - 1].prevrow === row &&
+//     pgnArr[pgnArr.length - 1].prevcol === col &&
+//     highlightPreviousBool
+//   )
+//     cellColor = (row + col) % 2 === 0 ? clr1p : clr2p;
+//   else if (
+//     pgnArr.length != 0 &&
+//     pgnArr[pgnArr.length - 1].newrow === row &&
+//     pgnArr[pgnArr.length - 1].newcol === col &&
+//     highlightPreviousBool
+//   )
+//     cellColor = (row + col) % 2 === 0 ? clr1p : clr2p;
+//   else cellColor = (row + col) % 2 === 0 ? clr1 : clr2;
+//   if (underCheck.bool && underCheck.posx === row && underCheck.posy === col) {
+//     cellColor = (row + col) % 2 === 0 ? clr1c : clr2c;
+//     if (prevrow === row && prevcol === col && highlightPieceBool)
+//       cellColor = (row + col) % 2 === 0 ? clr1x : clr2x;
+//   }
+//   return (
+//     labelStr +
+//     "<div class= 'cellBox cellBorder" +
+//     extraInfoStr +
+//     "' onclick = boardClick(" +
+//     row +
+//     "," +
+//     col +
+//     ") style='background-color: " +
+//     cellColor +
+//     "'>" +
+//     pieceStr +
+//     possibleMoveStr +
+//     "</div>"
+//   );
+// }
 function makeBoard() {
   str = "";
   for (i = 0; i <= 7; i++) {
@@ -682,6 +665,7 @@ function defaultFunctionSettings() {
   underCheck = { bool: false, posx: -1, posy: -1 };
   afterMoveInCheckBool = false;
   isLoadingPGNPawnPromotionJSON = {};
+  bodyImage = bodyImageURL[0];
   lastMoveJSON = {
     prevrow: -1,
     prevcol: -1,
@@ -723,7 +707,8 @@ function boardClick(row, col) {
       showValidMoves();
       inCheckCondition(boardArr[row][col].color);
       if (boardArr[prevrow][prevcol].piece === "king") checkCastle();
-      makeBoard();
+      //makeBoard();
+      highlightMoveCells();
     }
   } else if (prevrow === row && prevcol === col) {
     prevrow = -1;
@@ -1857,6 +1842,7 @@ function dd3Actions() {
 
 //LeftBar dd1
 function defaultBoardUI1() {
+  setBackgroundImage("");
   makeDefaultUISettings1();
   makeBoard();
   let menuStr =
@@ -1897,6 +1883,23 @@ function changeBoardColorUI() {
   colorPicker2.addEventListener("focus", updateBoxShadow);
   colorPicker2.addEventListener("blur", resetBoxShadow);
   colorPicker2.addEventListener("input", updateBoxShadow);
+}
+function addBackgroundPicture() {
+  menuStr =
+    "<div class='input-group input-group-pkr w-100'><input type='file' id='bgUpload' accept='image/*'/></div>";
+  document.getElementById("dd1menu").innerHTML = menuStr;
+  document
+    .getElementById("bgUpload")
+    .addEventListener("change", function (event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          setBackgroundImage(e.target.result);
+        };
+        reader.readAsDataURL(file);
+      }
+    });
 }
 function changeHighlightedColorUI() {
   let menuStr =
@@ -2162,6 +2165,7 @@ function showLegalMoveSetting() {
 
 //LeftBar dd3
 function showPGN() {
+  if (pgnStr === "") showCustomAlert("Please Play a Move First");
   let menuStr = "<p class = 'pgn-block'>" + pgnStr + "</p>";
   if (pgnStr.length != 0) {
     menuStr +=
@@ -2340,6 +2344,293 @@ function minimax() {
   if (moveCount % 2 === 1) {
   }
 }
+
+// Drag and Drop
+function makeCell(row, col) {
+  let pieceStr = "";
+  let possibleMoveStr = "";
+  let extraInfoStr = "";
+  let labelStr =
+    col === 0 ? "<div class='p-1 label-col-box'>" + (8 - row) + "</div>" : "";
+  num = showMovesArr.findIndex(function (ele) {
+    return ele.row === row && ele.col === col;
+  });
+  if (Object.keys(boardArr[row][col]).length != 0) {
+    pieceStr =
+      "<img src='" +
+      imagePath +
+      boardArr[row][col].key +
+      "' draggable='true' ondragstart='drag(event, " +
+      row +
+      ", " +
+      col +
+      ")' onclick='hello(" +
+      row +
+      "," +
+      col +
+      ")'>";
+  }
+  if (num != -1 && legalBool) {
+    if (Object.keys(boardArr[row][col]).length != 0) {
+      possibleMoveStr =
+        "<svg xmlns='http://www.w3.org/2000/svg' class='possible-move-square' viewBox='0 0 80 80' width='80' height='80'><circle cx='40' cy='40' r=" +
+        highlightDotRadius +
+        " fill='rgba(256, 100, 100, 0.4)'/></svg>";
+    } else {
+      possibleMoveStr =
+        "<svg xmlns='http://www.w3.org/2000/svg' class='possible-move-square' viewBox='0 0 80 80' width='80' height='80'><circle cx='40' cy='40' r=" +
+        highlightDotRadius +
+        " fill='rgba(100, 100, 100, 0.4)'/></svg>";
+    }
+  }
+  if (row === 0 && col === 0) {
+    extraInfoStr = "-top-start";
+  } else if (row === 7 && col === 0) {
+    extraInfoStr = "-bottom-start";
+  } else if (row === 0 && col === 7) {
+    extraInfoStr = "-top-end";
+  } else if (row === 7 && col === 7) {
+    extraInfoStr = "-bottom-end";
+  }
+  if (prevrow === row && prevcol === col && highlightPieceBool) {
+    cellColor = (row + col) % 2 === 0 ? clr1x : clr2x;
+  } else if (
+    pgnArr.length != 0 &&
+    pgnArr[pgnArr.length - 1].prevrow === row &&
+    pgnArr[pgnArr.length - 1].prevcol === col &&
+    highlightPreviousBool
+  ) {
+    cellColor = (row + col) % 2 === 0 ? clr1p : clr2p;
+  } else if (
+    pgnArr.length != 0 &&
+    pgnArr[pgnArr.length - 1].newrow === row &&
+    pgnArr[pgnArr.length - 1].newcol === col &&
+    highlightPreviousBool
+  ) {
+    cellColor = (row + col) % 2 === 0 ? clr1p : clr2p;
+  } else {
+    cellColor = (row + col) % 2 === 0 ? clr1 : clr2;
+  }
+  if (underCheck.bool && underCheck.posx === row && underCheck.posy === col) {
+    cellColor = (row + col) % 2 === 0 ? clr1c : clr2c;
+    if (prevrow === row && prevcol === col && highlightPieceBool) {
+      cellColor = (row + col) % 2 === 0 ? clr1x : clr2x;
+    }
+  }
+  possibleMoveStr = "";
+  return (
+    labelStr +
+    "<div class='cellBox cellBorder" +
+    extraInfoStr +
+    "' id='cell-" +
+    row +
+    "-" +
+    col +
+    "' ondrop='drop(event, " +
+    row +
+    ", " +
+    col +
+    ")' ondragover='allowDrop(event)' onclick='boardClick(" +
+    row +
+    "," +
+    col +
+    ")' style='background-color: " +
+    cellColor +
+    "'>" +
+    pieceStr +
+    possibleMoveStr +
+    "</div>"
+  );
+}
+function highlightMoveCells() {
+  let possibleMoveStr = "";
+  for (let row = 0; row <= 7; row++) {
+    for (let col = 0; col <= 7; col++) {
+      possibleMoveStr = "";
+      num = showMovesArr.findIndex(function (ele) {
+        return ele.row === row && ele.col === col;
+      });
+      if (num != -1 && legalBool) {
+        if (Object.keys(boardArr[row][col]).length != 0) {
+          possibleMoveStr =
+            "<svg xmlns='http://www.w3.org/2000/svg' class='possible-move-square' viewBox='0 0 80 80' width='80' height='80'><circle cx='40' cy='40' r=" +
+            highlightDotRadius +
+            " fill='rgba(256, 100, 100, 0.4)'/></svg>";
+        } else {
+          possibleMoveStr =
+            "<svg xmlns='http://www.w3.org/2000/svg' class='possible-move-square' viewBox='0 0 80 80' width='80' height='80'><circle cx='40' cy='40' r=" +
+            highlightDotRadius +
+            " fill='rgba(100, 100, 100, 0.4)'/></svg>";
+        }
+      }
+      if (possibleMoveStr.length > 0)
+        document
+          .getElementById("cell-" + row + "-" + col)
+          .insertAdjacentHTML("beforeend", possibleMoveStr);
+    }
+  }
+}
+function allowDrop(event) {
+  event.preventDefault();
+  //console.log("allowDrop", event);
+}
+function drag(event, row, col) {
+  event.dataTransfer.setData("text", event.target.parentElement.id);
+  // Call boardClick to show possible moves
+  console.log("Drag", event, row, col);
+  boardClick(row, col);
+}
+function drop(event, row, col) {
+  event.preventDefault();
+  console.log("Drop", event, row, col);
+  boardClick(row, col);
+}
+// function drop(event, row, col) {
+//   event.preventDefault();
+//   console.log("Drop", event, row, col);
+//   let fromSquareId = event.dataTransfer.getData("text");
+//   let fromSquare = document.getElementById(fromSquareId);
+//   let toSquare = event.target;
+
+//   // Ensure to drop the piece in the cell and not on another piece
+//   if (toSquare.classList.contains("cellBox")) {
+//     toSquare.appendChild(fromSquare.querySelector("img"));
+//   } else {
+//     toSquare.parentElement.appendChild(fromSquare.querySelector("img"));
+//   }
+
+//   let fromSquareRowCol = fromSquareId.split("-").slice(1).map(Number);
+//   let toSquareRowCol = [row, col];
+
+//   // Check if the move is valid
+//   let isValidMove = showMovesArr.some(function (ele) {
+//     return ele.row === row && ele.col === col;
+//   });
+
+//   if (isValidMove) {
+//     console.log(`Moved from ${fromSquareRowCol} to ${toSquareRowCol}`);
+
+//     // Update the board state after the move
+//     updateBoardState(fromSquareRowCol, toSquareRowCol);
+//     makeBoard(); // Redraw the board if necessary
+//   } else {
+//     // If not valid, revert the move
+//     fromSquare.appendChild(toSquare.querySelector("img"));
+//     alert("Invalid move!");
+//   }
+// }
+function updateBoardState(fromSquareRowCol, toSquareRowCol) {
+  let [fromRow, fromCol] = fromSquareRowCol;
+  let [toRow, toCol] = toSquareRowCol;
+
+  boardArr[toRow][toCol] = boardArr[fromRow][fromCol];
+  boardArr[fromRow][fromCol] = {};
+}
+// function boardClick(row, col) {
+//   console.log(prevrow, prevcol, row, col);
+//   if (prevrow === -1 || prevcol === -1) {
+//     if (
+//       Object.keys(boardArr[row][col]).length != 0 &&
+//       moveStartConditon(row, col)
+//     ) {
+//       prevrow = row;
+//       prevcol = col;
+//       showValidMoves();
+//       inCheckCondition(boardArr[row][col].color);
+//       if (boardArr[prevrow][prevcol].piece === "king") checkCastle();
+//       //makeBoard();
+//       highlightMoveCells();
+//     }
+//   } else if (prevrow === row && prevcol === col) {
+//     prevrow = -1;
+//     prevcol = -1;
+//     showMovesArr = [];
+//     makeBoard();
+//   } else {
+//     let obj = showMovesArr.find(function (ele) {
+//       return ele.row === row && ele.col === col;
+//     });
+//     if (obj) {
+//       lastMove(row, col);
+//       let localePgnGenerationStopBool = true;
+//       if (
+//         checkEnPassant(row, col, boardArr[prevrow][prevcol].color) &&
+//         pgnArr.length != 0
+//       ) {
+//         lastMoveJSON.enPassant = true;
+//         lastMoveJSON.cutPiece =
+//           boardArr[pgnArr[pgnArr.length - 1].newrow][
+//             pgnArr[pgnArr.length - 1].newcol
+//           ];
+//         boardArr[pgnArr[pgnArr.length - 1].newrow][
+//           pgnArr[pgnArr.length - 1].newcol
+//         ] = {};
+//         let pointColor =
+//           boardArr[prevrow][prevcol].color === "white" ? "black" : "white";
+//         pointUpdateCounter("pawn", pointColor);
+//       }
+//       if (
+//         ((boardArr[prevrow][prevcol].color === "white" && row === 0) ||
+//           (boardArr[prevrow][prevcol].color === "black" && row === 7)) &&
+//         boardArr[prevrow][prevcol].piece === "pawn"
+//       ) {
+//         if (Object.keys(isLoadingPGNPawnPromotionJSON).length === 0) {
+//           pawnPromotion(row, col, boardArr[prevrow][prevcol].color);
+//           localePgnGenerationStopBool = false;
+//         }
+//       }
+//       if (boardArr[prevrow][prevcol].piece === "king") {
+//         if (Math.abs(prevrow - row) === 0 && Math.abs(prevcol - col) === 2) {
+//           lastMoveJSON.castleBool = true;
+//           castleMove(row, col, boardArr[prevrow][prevcol].color);
+//           lastMoveJSON.castleDisable = moveCount;
+//           castleBool["short" + boardArr[prevrow][prevcol].color] = false;
+//           castleBool["long" + boardArr[prevrow][prevcol].color] = false;
+//         }
+//         if (boardArr[prevrow][prevcol].piece === "rook") {
+//           let sideStr = prevcol === 0 ? "long" : "short";
+//           lastMoveJSON.castleDisable = moveCount;
+//           castleBool[sideStr + boardArr[prevrow][prevcol].color] = false;
+//         }
+//         temp = boardArr[row][col];
+//         boardArr[row][col] = boardArr[prevrow][prevcol];
+//         boardArr[prevrow][prevcol] = {};
+//         if (Object.keys(isLoadingPGNPawnPromotionJSON).length != 0) {
+//           boardArr[isLoadingPGNPawnPromotionJSON.row][
+//             isLoadingPGNPawnPromotionJSON.col
+//           ] = isLoadingPGNPawnPromotionJSON.json;
+//           missingPiecesUpdate();
+//         }
+//         moveCount++;
+//         prevrow = -1;
+//         prevcol = -1;
+//         showMovesArr = [];
+//         checkCheck();
+//         lastMoveJSON.checkBool = underCheck.bool;
+//         if (localePgnGenerationStopBool) {
+//           pgnArr.push(lastMoveJSON);
+//         }
+//         makePGN();
+//         makeBoard();
+//         if (Object.keys(temp).length != 0) {
+//           pointUpdateCounter(temp.piece, temp.color);
+//         }
+//         if (document.getElementById("dd3").value === leftBarArr3[0]) {
+//           showPGN();
+//         }
+//       } else if (moveStartConditon(row, col)) {
+//         prevrow = row;
+//         prevcol = col;
+//         showValidMoves();
+//         inCheckCondition(boardArr[row][col].color);
+//         if (boardArr[prevrow][prevcol].piece === "king") {
+//           checkCastle();
+//         }
+//         makeBoard();
+//       }
+//     }
+//   }
+// }
 
 //move
 let movesSimulated = { do: 0, undo: 0 };

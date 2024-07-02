@@ -4,7 +4,11 @@ body {
   background-color: rgba(0, 0, 0, 0.9);
   color: white;
 }
-/* Add a function allowing to upload image to set as background and then give that property to body*/
+.dragging {
+  position: absolute;
+  z-index: 3;
+  pointer-events: none; /* Disable pointer events to prevent interference */
+}
 select {
   font-family: "FontAwesome";
 }
@@ -231,7 +235,7 @@ select {
   padding-left: 15%;
 }
 .right-bar-td-odd {
-  padding-left: 14%;
+  padding-left: 11%;
 }
 .color-line-top {
   height: 5px;
