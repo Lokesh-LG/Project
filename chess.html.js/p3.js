@@ -654,6 +654,7 @@ function ddActionsNew(index1, index2) {
     [
       defaultBoardUI1,
       changeBoardColorUI,
+      addBackgroundPicture,
       changeHighlightedColorUI,
       changeCheckColorUI,
       changePreviousColorUI,
