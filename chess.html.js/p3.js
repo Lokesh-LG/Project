@@ -250,87 +250,139 @@ function btnTimeActions(index) {
     "<br><button type='button' class='p-3 btn btn-light btn-block w-100 h-100 btn-confirm' onclick = switchNavTab_LoadGame()>Play Game</button>";
   document.getElementById("info").innerHTML = str;
 }
-// function makeCell(row, col) {
-//   let pieceStr = "";
-//   let possibleMoveStr = "";
-//   let extraInfoStr = "";
-//   let labelStr = "";
-//   if (col === 0) {
-//     labelStr = colRowBool
-//       ? "<div class = 'p-1 label-col-box'>" + (8 - row) + "</div>"
-//       : "<div class = 'p-1 label-col-box'></div>";
-//   } else labelStr = "";
-//   num = showMovesArr.findIndex(function (ele) {
-//     return ele.row === row && ele.col === col;
-//   });
-//   if (Object.keys(boardArr[row][col]).length != 0)
-//     pieceStr =
-//       "<img src = '" +
-//       imagePath +
-//       boardArr[row][col].key +
-//       "' onclick = hello(" +
-//       row +
-//       "," +
-//       col +
-//       ")>";
-//   if (num != -1 && legalBool)
-//     if (Object.keys(boardArr[row][col]).length != 0)
-//       possibleMoveStr =
-//         "<svg xmlns='http://www.w3.org/2000/svg' class = 'possible-move-square' viewBox='0 0 80 80' width='80' height='80'><circle cx='40' cy='40' r=" +
-//         highlightDotRadius +
-//         " fill='rgba(256, 100, 100, 0.4)'/></svg>";
-//     else
-//       possibleMoveStr =
-//         "<svg xmlns='http://www.w3.org/2000/svg' class = 'possible-move-square' viewBox='0 0 80 80' width='80' height='80'><circle cx='40' cy='40' r=" +
-//         highlightDotRadius +
-//         " fill='rgba(100, 100, 100, 0.4)'/></svg>";
-//   if (row === 0 && col === 0) {
-//     extraInfoStr = "-top-start";
-//   } else if (row === 7 && col === 0) {
-//     extraInfoStr = "-bottom-start";
-//   } else if (row === 0 && col === 7) {
-//     extraInfoStr = "-top-end";
-//   } else if (row === 7 && col === 7) {
-//     extraInfoStr = "-bottom-end";
-//   }
-//   if (prevrow === row && prevcol === col && highlightPieceBool)
-//     cellColor = (row + col) % 2 === 0 ? clr1x : clr2x;
-//   else if (
-//     pgnArr.length != 0 &&
-//     pgnArr[pgnArr.length - 1].prevrow === row &&
-//     pgnArr[pgnArr.length - 1].prevcol === col &&
-//     highlightPreviousBool
-//   )
-//     cellColor = (row + col) % 2 === 0 ? clr1p : clr2p;
-//   else if (
-//     pgnArr.length != 0 &&
-//     pgnArr[pgnArr.length - 1].newrow === row &&
-//     pgnArr[pgnArr.length - 1].newcol === col &&
-//     highlightPreviousBool
-//   )
-//     cellColor = (row + col) % 2 === 0 ? clr1p : clr2p;
-//   else cellColor = (row + col) % 2 === 0 ? clr1 : clr2;
-//   if (underCheck.bool && underCheck.posx === row && underCheck.posy === col) {
-//     cellColor = (row + col) % 2 === 0 ? clr1c : clr2c;
-//     if (prevrow === row && prevcol === col && highlightPieceBool)
-//       cellColor = (row + col) % 2 === 0 ? clr1x : clr2x;
-//   }
-//   return (
-//     labelStr +
-//     "<div class= 'cellBox cellBorder" +
-//     extraInfoStr +
-//     "' onclick = boardClick(" +
-//     row +
-//     "," +
-//     col +
-//     ") style='background-color: " +
-//     cellColor +
-//     "'>" +
-//     pieceStr +
-//     possibleMoveStr +
-//     "</div>"
-//   );
-// }
+function makeCell(row, col) {
+  let pieceStr = "";
+  let possibleMoveStr = "";
+  let extraInfoStr = "";
+  let labelStr = "";
+  if (col === 0) {
+    labelStr = colRowBool
+      ? "<div class = 'p-1 label-col-box'>" + (8 - row) + "</div>"
+      : "<div class = 'p-1 label-col-box'></div>";
+  } else labelStr = "";
+  num = showMovesArr.findIndex(function (ele) {
+    return ele.row === row && ele.col === col;
+  });
+  if (Object.keys(boardArr[row][col]).length != 0) {
+    pieceStr =
+      "<img src='" +
+      imagePath +
+      boardArr[row][col].key +
+      "' draggable='true' ondragstart='drag(event, " +
+      row +
+      ", " +
+      col +
+      ")' onclick='hello(" +
+      row +
+      "," +
+      col +
+      ")'>";
+  }
+  if (num != -1 && legalBool)
+    if (Object.keys(boardArr[row][col]).length != 0)
+      possibleMoveStr =
+        "<svg xmlns='http://www.w3.org/2000/svg' class = 'possible-move-square' viewBox='0 0 80 80' width='80' height='80'><circle cx='40' cy='40' r=" +
+        highlightDotRadius +
+        " fill='rgba(256, 100, 100, 0.4)'/></svg>";
+    else
+      possibleMoveStr =
+        "<svg xmlns='http://www.w3.org/2000/svg' class = 'possible-move-square' viewBox='0 0 80 80' width='80' height='80'><circle cx='40' cy='40' r=" +
+        highlightDotRadius +
+        " fill='rgba(100, 100, 100, 0.4)'/></svg>";
+  if (row === 0 && col === 0) {
+    extraInfoStr = "-top-start";
+  } else if (row === 7 && col === 0) {
+    extraInfoStr = "-bottom-start";
+  } else if (row === 0 && col === 7) {
+    extraInfoStr = "-top-end";
+  } else if (row === 7 && col === 7) {
+    extraInfoStr = "-bottom-end";
+  }
+  if (prevrow === row && prevcol === col && highlightPieceBool)
+    cellColor = (row + col) % 2 === 0 ? clr1x : clr2x;
+  else if (
+    pgnArr.length != 0 &&
+    pgnArr[pgnArr.length - 1].prevrow === row &&
+    pgnArr[pgnArr.length - 1].prevcol === col &&
+    highlightPreviousBool
+  )
+    cellColor = (row + col) % 2 === 0 ? clr1p : clr2p;
+  else if (
+    pgnArr.length != 0 &&
+    pgnArr[pgnArr.length - 1].newrow === row &&
+    pgnArr[pgnArr.length - 1].newcol === col &&
+    highlightPreviousBool
+  )
+    cellColor = (row + col) % 2 === 0 ? clr1p : clr2p;
+  else cellColor = (row + col) % 2 === 0 ? clr1 : clr2;
+  if (underCheck.bool && underCheck.posx === row && underCheck.posy === col) {
+    cellColor = (row + col) % 2 === 0 ? clr1c : clr2c;
+    if (prevrow === row && prevcol === col && highlightPieceBool)
+      cellColor = (row + col) % 2 === 0 ? clr1x : clr2x;
+  }
+  return (
+    labelStr +
+    "<div class='cellBox cellBorder" +
+    extraInfoStr +
+    "' id='cell-" +
+    row +
+    "-" +
+    col +
+    "' ondrop='drop(event, " +
+    row +
+    ", " +
+    col +
+    ")' ondragover='allowDrop(event)' onclick='boardClick(" +
+    row +
+    "," +
+    col +
+    ")' style='background-color: " +
+    cellColor +
+    "'>" +
+    pieceStr +
+    possibleMoveStr +
+    "</div>"
+  );
+}
+function highlightMoveCells() {
+  let possibleMoveStr = "";
+  for (let row = 0; row <= 7; row++) {
+    for (let col = 0; col <= 7; col++) {
+      possibleMoveStr = "";
+      num = showMovesArr.findIndex(function (ele) {
+        return ele.row === row && ele.col === col;
+      });
+      if (num != -1 && legalBool) {
+        if (Object.keys(boardArr[row][col]).length != 0) {
+          possibleMoveStr =
+            "<svg xmlns='http://www.w3.org/2000/svg' class='possible-move-square' viewBox='0 0 80 80' width='80' height='80'><circle cx='40' cy='40' r=" +
+            highlightDotRadius +
+            " fill='rgba(256, 100, 100, 0.4)'/></svg>";
+        } else {
+          possibleMoveStr =
+            "<svg xmlns='http://www.w3.org/2000/svg' class='possible-move-square' viewBox='0 0 80 80' width='80' height='80'><circle cx='40' cy='40' r=" +
+            highlightDotRadius +
+            " fill='rgba(100, 100, 100, 0.4)'/></svg>";
+        }
+      }
+      if (possibleMoveStr.length > 0)
+        document
+          .getElementById("cell-" + row + "-" + col)
+          .insertAdjacentHTML("beforeend", possibleMoveStr);
+    }
+  }
+  highlightSelectedCell();
+}
+function highlightSelectedCell() {
+  let row = prevrow;
+  let col = prevcol;
+  cellColor = (row + col) % 2 === 0 ? clr1x : clr2x;
+  if (underCheck.bool && underCheck.posx === row && underCheck.posy === col) {
+    cellColor = (row + col) % 2 === 0 ? clr1x : clr2x;
+  }
+  let element = document.getElementById("cell-" + row + "-" + col);
+  element.setAttribute("style", "background-color:" + cellColor + ";");
+}
 function makeBoard() {
   str = "";
   for (i = 0; i <= 7; i++) {
@@ -364,193 +416,6 @@ function confirmedTime() {
   } else {
     switchNavTab_LoadGame();
   }
-}
-// function makeLeftBar() {
-//   let arr1 = leftBarArr1.map(function (ele) {
-//     return "<option>" + ele + "</option>";
-//   });
-//   let arr2 = leftBarArr2.map(function (ele) {
-//     return "<option>" + ele + "</option>";
-//   });
-//   let arr3 = leftBarArr3.map(function (ele) {
-//     return "<option>" + ele + "</option>";
-//   });
-//   leftStr =
-//     "<div class = 'containerLeft'><div class='btn-group-vertical w-100' role='group'><div class='btn-group' role='group'><button class = 'p-3 btn btn-light btn-block-red w-100 h-100' onclick = 'undoMove()'><i class='fa-solid fa-left-long'></i> Undo Move</button><button class = 'p-3 btn btn-light btn-green w-100 h-100' onclick = 'redoMove()'><i class='fa-solid fa-right-long'></i> Redo Move</button></div><select class='p-3 btn btn-light left-bar-block w-100 h-100' id = 'dd1' onChange=dd1Actions()><option selected disabled>" +
-//     // "&#xf43c; " +
-//     leftBarArrAll[0] +
-//     "</option>" +
-//     arr1.join("") +
-//     "</select><div id = 'dd1menu' class = 'w-100'></div><div class = 'height-break'></div><select class='p-3 btn  btn-light left-bar-block w-100 h-100' id= 'dd2' onChange=dd2Actions()><option selected disabled>" +
-//     // "&#xf047; " +
-//     leftBarArrAll[1] +
-//     "</option>" +
-//     arr2.join("") +
-//     "</select><div id = 'dd2menu' class = 'w-100'></div><div class = 'height-break'></div><select class='p-3 btn btn-light left-bar-block w-100 h-100' id= 'dd3' onChange=dd3Actions()><option selected disabled>" +
-//     // "&#xf02d; " +
-//     leftBarArrAll[2] +
-//     "</option>" +
-//     arr3.join("") +
-//     "</select><div id = 'dd3menu' class = 'w-100'></div><div class = 'height-break'></div><div id = 'missingPiece' class ='missing-piece'></div></div>";
-//   document.getElementById("leftbar").innerHTML = leftStr;
-// }
-function makeLeftBar(leftBarInstance) {
-  let leftBarAllInstance = leftBarInstance ? leftBarInstance : leftBarArrAll;
-  let missingPieceElement = document.getElementById("missingPiece");
-  missingPieceStr = missingPieceElement ? missingPieceElement.innerHTML : "";
-  leftStr =
-    "<div class = 'containerLeft'><div class='btn-group-vertical w-100' role='group'>" +
-    "<div class='btn-group' role='group'>" +
-    "<button class = 'p-3 btn btn-light btn-block-red w-100 h-100' onclick = 'undoMove()'><i class='fa-solid fa-left-long'></i> Undo Move</button>" +
-    "<button class = 'p-3 btn btn-light btn-green w-100 h-100' onclick = 'redoMove()'><i class='fa-solid fa-right-long'></i> Redo Move</button></div>" +
-    "<div class = 'height-break'></div>";
-  leftStr += leftBarAllInstance
-    .map(function (ele, index) {
-      return makeLeftDD(ele, index, leftBarOpenStatus[index]);
-    })
-    .join("");
-  leftStr +=
-    "<div id = 'missingPiece' class ='missing-piece'>" +
-    missingPieceStr +
-    "</div></div>";
-  document.getElementById("leftbar").innerHTML = leftStr;
-}
-function makeLeftDD(ele, index1, isOpen) {
-  let str =
-    "<button class='p-3 btn btn-light left-bar-block h-100' onclick='showOptionsLeftDD(" +
-    index1 +
-    ",-1)' >" +
-    "<i class='fas  " +
-    ele.icon +
-    "'></i>" +
-    "&nbsp;&nbsp;" +
-    ele.txt +
-    (ele.txt === leftBarArrAll[index1].txt
-      ? "<i class='align-right-fa-icon fas " +
-        (isOpen ? "fa-caret-up" : "fa-caret-down") +
-        "'></i>"
-      : "") +
-    "</button>" +
-    "<div class='w-100' role='group' id='dd" +
-    (index1 + 1) +
-    "menu'>" +
-    (isOpen ? makeLeftBarDDMenu(index1) : "") +
-    "</div><div class = 'height-break'></div>";
-  return str;
-}
-function makeLeftBarDDMenu(index1) {
-  return leftBarArr[index1]
-    .map(function (ele, index2) {
-      return (
-        "<button class='btn dd-menu-block btn-bd-secondary w-100 h-100' style='padding-left:36px' type='button' onclick='showOptionsLeftDD(" +
-        index1 +
-        "," +
-        index2 +
-        ")' >" +
-        "<i class='fas  " +
-        ele.icon +
-        "'></i>" +
-        "&nbsp;&nbsp;" +
-        ele.txt +
-        "</button>"
-      );
-    })
-    .join("");
-}
-function makeRightBar() {
-  let tableStr = "";
-  if (rightPgnArr.length === 1) rightPgnArr.push(" ");
-  let tableArr = rightPgnArr.map(function (ele, index) {
-    if (index % 2 == 0)
-      return (
-        "<tr><th class ='right-bar-th'>" +
-        (Math.abs(index / 2) + 1) +
-        "</th><td class = 'right-bar-td right-bar-td-even' onclick='changeColorRightBarTd(this)'>" +
-        ele +
-        "</td>"
-      );
-    else
-      return (
-        "<td class = 'right-bar-td right-bar-td-odd' onclick='changeColorRightBarTd(this)'>" +
-        ele +
-        "</td></tr>"
-      );
-  });
-  let headStr = "";
-  headStr =
-    "<thead>" +
-    "<div class='btn-group rounded-1' role='group'><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'copyPGN()'><i class='fa-solid fa-copy'></i></button><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'backwardFastPGN()'><i class='fa-solid fa-backward-fast'></i></button><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'backwardStepPGN()'><i class='fa-solid fa-backward-step'></i></button><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'forwardStepPGN()'><i class='fa-solid fa-forward-step'></i></button><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'forwardFastPGN()'><i class='fa-solid fa-forward-fast'></i></button><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'flipBoard()'><i class='fa-solid fa-rotate'></i></button></div>" +
-    "</thead>";
-  if (rightPgnArr.length != 0) {
-    tableStr =
-      headStr +
-      "<div class = 'table-container'><table class = 'table-dark table-block'  id='showLeftBarMoves'>" +
-      tableArr.join("") +
-      "</table></div>";
-  }
-  //console.log(tableStr);
-  let rightStr =
-    "<div class = 'containerRight'><div id = 'missingPieceWhite' class='missing-piece-top'></div><div class='btn-group-vertical w-100' role='group'><div class='btn-group' role='group'><input type='text' class='btn-name-right' id='opponentName' value='Opponent' placeholder='Opponent'><button class = 'p-3 btn btn-light btn-right w-100 h-100'>Timer</button></div><span class = 'color-line-top'></span>" +
-    tableStr +
-    "<span class = 'color-line-bottom'></span><div class='btn-group-vertical w-100' role='group'><div class='btn-group' role='group'><input type='text' class='btn-name-right' id='userName' value='You' placeholder='You'><button class = 'p-3 btn btn-light btn-right w-100 h-100'>Timer</button></div><div id = 'missingPieceBlack' class='missing-piece-bottom'></div></div></div>";
-
-  if (rightPgnArr && rightPgnArr.length > 2) {
-    document.getElementById("showLeftBarMoves").innerHTML = tableArr.join("");
-  } else document.getElementById("rightbar").innerHTML = rightStr;
-  if (rightPgnArr.length != 0 && rightPgnArr.length != 1) {
-    let tableContainer = document.querySelector(".table-container");
-    tableContainer.scrollTop = tableContainer.scrollHeight;
-    missingPiecesUpdate();
-  }
-}
-function closeOptionsLeftDD() {
-  leftBarOpenStatus = [false, false, false];
-  makeLeftBar();
-}
-function showOptionsLeftDD(index1, index2) {
-  if (index2 === -1) {
-    leftBarOpenStatus = leftBarOpenStatus.map(function (ele, index3) {
-      return index3 === index1 ? !ele : false;
-    });
-    makeLeftBar();
-  } else {
-    let leftBarAllInstance = [...leftBarArrAll];
-    leftBarAllInstance[index1] = leftBarArr[index1][index2];
-    makeLeftBar(leftBarAllInstance);
-    ddActionsNew(index1, index2);
-    //makeLeftBar({ dd: index1, option: index2, strMenu: strMenu });
-  }
-}
-function ddActionsNew(index1, index2) {
-  let ddActionsFns = [
-    [
-      defaultBoardUI1,
-      changeBoardColorUI,
-      changeHighlightedColorUI,
-      changeCheckColorUI,
-      changePreviousColorUI,
-      changePieceType,
-      showColRow,
-      changeThemesUI,
-    ],
-    [
-      defaultBoardUI2,
-      highlightPreviousMoveSetting,
-      highlightSelectedPieceSetting,
-      showLegalMoveSetting,
-      changeValidMoveDot,
-    ],
-    [showPGN, importPGNUI],
-  ];
-  ddActionsFns[index1][index2]();
-}
-function changeColorRightBarTd(td) {
-  let clickedColor = "#88ffff";
-  let allTds = document.querySelectorAll(".right-bar-td");
-  allTds.forEach(function (element) {
-    element.style.removeProperty("color");
-  });
-  td.style.color = clickedColor;
 }
 function makeStartBoard() {
   for (row = 0; row <= 7; row++) {
@@ -658,12 +523,15 @@ function defaultFunctionSettings() {
   prevcol = -1;
   showMovesArr = [];
   pgnArr = [];
+  redoMoveArr = [];
   rightPgnArr = [];
   pgnStr = "";
   virtualBoardStr = "";
   labelArr = ["a", "b", "c", "d", "e", "f", "g", "h"];
   underCheck = { bool: false, posx: -1, posy: -1 };
   afterMoveInCheckBool = false;
+  lastMoveUndoMoveBool = false;
+  comingFromRedoMoveBool = false;
   isLoadingPGNPawnPromotionJSON = {};
   bodyImage = bodyImageURL[0];
   lastMoveJSON = {
@@ -679,7 +547,7 @@ function defaultFunctionSettings() {
     enPassant: false,
     castleBool: false,
     moveNumber: 1,
-    pawnPromotion: false,
+    promotionBool: false,
     ambiguityBoolColSame: false,
     ambiguityBool: false,
     pawnPromotedto: "",
@@ -692,11 +560,180 @@ function defaultFunctionSettings() {
   ];
   console.clear();
 }
+function setBackgroundImage(imageUrl) {
+  document.body.style.backgroundImage = `url(${imageUrl})`;
+  document.body.style.backgroundSize = "cover";
+  document.body.style.backgroundPosition = "center";
+  document.body.style.backgroundRepeat = "no-repeat";
+}
+
+//Make LeftBar
+function makeLeftBar(leftBarInstance) {
+  let leftBarAllInstance = leftBarInstance ? leftBarInstance : leftBarArrAll;
+  let missingPieceElement = document.getElementById("missingPiece");
+  missingPieceStr = missingPieceElement ? missingPieceElement.innerHTML : "";
+  leftStr =
+    "<div class = 'containerLeft'><div class='btn-group-vertical w-100' role='group'>" +
+    "<div class='btn-group' role='group'>" +
+    "<button class = 'p-3 btn btn-light btn-block-red w-100 h-100' onclick = 'undoMove()'><i class='fa-solid fa-left-long'></i> Undo Move</button>" +
+    "<button class = 'p-3 btn btn-light btn-green w-100 h-100' onclick = 'redoMove()'><i class='fa-solid fa-right-long'></i> Redo Move</button></div>" +
+    "<div class = 'height-break'></div>";
+  leftStr += leftBarAllInstance
+    .map(function (ele, index) {
+      return makeLeftDD(ele, index, leftBarOpenStatus[index]);
+    })
+    .join("");
+  leftStr +=
+    "<div id = 'missingPiece' class ='missing-piece'>" +
+    missingPieceStr +
+    "</div></div>";
+  document.getElementById("leftbar").innerHTML = leftStr;
+}
+function makeLeftDD(ele, index1, isOpen) {
+  let str =
+    "<button class='p-3 btn btn-light left-bar-block h-100' onclick='showOptionsLeftDD(" +
+    index1 +
+    ",-1)' >" +
+    "<i class='fas  " +
+    ele.icon +
+    "'></i>" +
+    "&nbsp;&nbsp;" +
+    ele.txt +
+    (ele.txt === leftBarArrAll[index1].txt
+      ? "<i class='align-right-fa-icon fas " +
+        (isOpen ? "fa-caret-up" : "fa-caret-down") +
+        "'></i>"
+      : "") +
+    "</button>" +
+    "<div class='w-100' role='group' id='dd" +
+    (index1 + 1) +
+    "menu'>" +
+    (isOpen ? makeLeftBarDDMenu(index1) : "") +
+    "</div><div class = 'height-break'></div>";
+  return str;
+}
+function makeLeftBarDDMenu(index1) {
+  return leftBarArr[index1]
+    .map(function (ele, index2) {
+      return (
+        "<button class='btn dd-menu-block btn-bd-secondary w-100 h-100' style='padding-left:36px' type='button' onclick='showOptionsLeftDD(" +
+        index1 +
+        "," +
+        index2 +
+        ")' >" +
+        "<i class='fas  " +
+        ele.icon +
+        "'></i>" +
+        "&nbsp;&nbsp;" +
+        ele.txt +
+        "</button>"
+      );
+    })
+    .join("");
+}
+function closeOptionsLeftDD() {
+  leftBarOpenStatus = [false, false, false];
+  makeLeftBar();
+}
+function showOptionsLeftDD(index1, index2) {
+  if (index2 === -1) {
+    leftBarOpenStatus = leftBarOpenStatus.map(function (ele, index3) {
+      return index3 === index1 ? !ele : false;
+    });
+    makeLeftBar();
+  } else {
+    let leftBarAllInstance = [...leftBarArrAll];
+    leftBarAllInstance[index1] = leftBarArr[index1][index2];
+    makeLeftBar(leftBarAllInstance);
+    ddActionsNew(index1, index2);
+    //makeLeftBar({ dd: index1, option: index2, strMenu: strMenu });
+  }
+}
+function ddActionsNew(index1, index2) {
+  let ddActionsFns = [
+    [
+      defaultBoardUI1,
+      changeBoardColorUI,
+      changeHighlightedColorUI,
+      changeCheckColorUI,
+      changePreviousColorUI,
+      changePieceType,
+      showColRow,
+      changeThemesUI,
+    ],
+    [
+      defaultBoardUI2,
+      highlightPreviousMoveSetting,
+      highlightSelectedPieceSetting,
+      showLegalMoveSetting,
+      changeValidMoveDot,
+    ],
+    [showPGN, importPGNUI],
+  ];
+  ddActionsFns[index1][index2]();
+}
+
+//Make RightBar
+function makeRightBar() {
+  let tableStr = "";
+  if (rightPgnArr.length === 1) rightPgnArr.push(" ");
+  let tableArr = rightPgnArr.map(function (ele, index) {
+    if (index % 2 == 0)
+      return (
+        "<tr><th class ='right-bar-th'>" +
+        (Math.abs(index / 2) + 1) +
+        "</th><td class = 'right-bar-td right-bar-td-even' onclick='changeColorRightBarTd(this)'>" +
+        ele +
+        "</td>"
+      );
+    else
+      return (
+        "<td class = 'right-bar-td right-bar-td-odd' onclick='changeColorRightBarTd(this)'>" +
+        ele +
+        "</td></tr>"
+      );
+  });
+  let headStr = "";
+  headStr =
+    "<thead>" +
+    "<div class='btn-group rounded-1' role='group'><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'copyPGN()'><i class='fa-solid fa-copy'></i></button><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'backwardFastPGN()'><i class='fa-solid fa-backward-fast'></i></button><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'backwardStepPGN()'><i class='fa-solid fa-backward-step'></i></button><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'forwardStepPGN()'><i class='fa-solid fa-forward-step'></i></button><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'forwardFastPGN()'><i class='fa-solid fa-forward-fast'></i></button><button class = 'p-3 btn btn-light btn-right-block w-100 h-100' onclick = 'flipBoard()'><i class='fa-solid fa-rotate'></i></button></div>" +
+    "</thead>";
+  if (rightPgnArr.length != 0) {
+    tableStr =
+      headStr +
+      "<div class = 'table-container'><table class = 'table-dark table-block'  id='showLeftBarMoves'>" +
+      tableArr.join("") +
+      "</table></div>";
+  }
+  //console.log(tableStr);
+  let rightStr =
+    "<div class = 'containerRight'><div id = 'missingPieceWhite' class='missing-piece-top'></div><div class='btn-group-vertical w-100' role='group'><div class='btn-group' role='group'><input type='text' class='btn-name-right' id='opponentName' value='Opponent' placeholder='Opponent'><button class = 'p-3 btn btn-light btn-right w-100 h-100'>Timer</button></div><span class = 'color-line-top'></span>" +
+    tableStr +
+    "<span class = 'color-line-bottom'></span><div class='btn-group-vertical w-100' role='group'><div class='btn-group' role='group'><input type='text' class='btn-name-right' id='userName' value='You' placeholder='You'><button class = 'p-3 btn btn-light btn-right w-100 h-100'>Timer</button></div><div id = 'missingPieceBlack' class='missing-piece-bottom'></div></div></div>";
+
+  if (rightPgnArr && rightPgnArr.length > 2) {
+    document.getElementById("showLeftBarMoves").innerHTML = tableArr.join("");
+  } else document.getElementById("rightbar").innerHTML = rightStr;
+  if (rightPgnArr.length != 0 && rightPgnArr.length != 1) {
+    let tableContainer = document.querySelector(".table-container");
+    tableContainer.scrollTop = tableContainer.scrollHeight;
+    missingPiecesUpdate();
+  }
+}
+function changeColorRightBarTd(td) {
+  let clickedColor = "#88ffff";
+  let allTds = document.querySelectorAll(".right-bar-td");
+  allTds.forEach(function (element) {
+    element.style.removeProperty("color");
+  });
+  td.style.color = clickedColor;
+}
 
 //Board Logic
 function boardClick(row, col) {
+  // console.log(prevrow, prevcol, row, col);
   closeOptionsLeftDD();
-  //console.log(prevrow, prevcol, row, col);
+  if (!comingFromRedoMoveBool) lastMoveUndoMoveBool = false;
   if (prevrow === -1 || prevcol === -1) {
     if (
       Object.keys(boardArr[row][col]).length != 0 &&
@@ -1139,7 +1176,7 @@ function pawnPromotionClick(row, col) {
   virtualBoardStr = "";
   let localerow = row < 4 ? 0 : 7;
   boardArr[localerow][col] = virtualBoardArr[row][col];
-  lastMoveJSON.pawnPromotion = true;
+  lastMoveJSON.promotionBool = true;
   lastMoveJSON.pawnPromotedto = virtualBoardArr[row][col].piece;
   pointCount[virtualBoardArr[row][col].color + "pawn"]--;
   pointCount[
@@ -1281,7 +1318,7 @@ function lastMove(row, col) {
     moveNumber: moveCount,
     checkBool: false,
     enPassant: false,
-    pawnPromotion: false,
+    promotionBool: false,
     castleBool: false,
     castleDisable: -1,
     pawnPromotedto: "",
@@ -1336,7 +1373,13 @@ function undoMove() {
     showCustomAlert("Please Select Piece To Promote");
     return;
   }
+  if (pgnArr.length === 0) {
+    showCustomAlert("Please Play Move");
+    return;
+  }
   let lastMoveJSON = pgnArr.pop();
+  redoMoveArr.push(lastMoveJSON);
+  lastMoveUndoMoveBool = true;
   boardArr[lastMoveJSON.prevrow][lastMoveJSON.prevcol] = lastMoveJSON.key;
   moveCount--;
   if (lastMoveJSON.castleDisable === lastMoveJSON.moveNumber) {
@@ -1354,7 +1397,7 @@ function undoMove() {
     pointCount[localeColor + "pawn"]++;
     boardArr[lastMoveJSON.newrow][lastMoveJSON.newcol] = {};
     boardArr[lastMoveJSON.prevrow][lastMoveJSON.newcol] = lastMoveJSON.cutPiece;
-  } else if (lastMoveJSON.pawnPromotion) {
+  } else if (lastMoveJSON.promotionBool) {
     boardArr[lastMoveJSON.newrow][lastMoveJSON.newcol] = lastMoveJSON.cutPiece;
     pointCount[lastMoveJSON.cutPiece.color + lastMoveJSON.cutPiece.piece]++;
     pointCount[lastMoveJSON.color + "pawn"]++;
@@ -1386,10 +1429,18 @@ function undoMove() {
   missingPiecesUpdate();
   checkCheck();
   makePGN();
-  //if (document.getElementById("dd3").value === leftBarArr3[0]) showPGN();
   highlightPieceBool = false;
   makeBoard();
   highlightPieceBool = true;
+}
+function redoMove() {
+  if (!lastMoveUndoMoveBool || redoMoveArr.length === 0) {
+    showCustomAlert("Please Undo Move");
+    return;
+  }
+  let localeLastMove = redoMoveArr.pop();
+  comingFromRedoMoveBool = true;
+  makeBoardViaPGN(localeLastMove);
 }
 
 //Pieces Lost/ Points Update
@@ -1511,7 +1562,7 @@ function makePGN() {
       }
       notation += colPgn[ele.newcol];
       notation += String(8 - ele.newrow);
-      if (ele.pawnPromotion) {
+      if (ele.promotionBool) {
         notation += "=";
         if (ele.pawnPromotedto === "knight") notation += "N";
         else if (ele.pawnPromotedto === "rook") notation += "R";
@@ -1554,13 +1605,13 @@ function decodePGN() {
       newcol: -1,
       key: "",
       piece: "",
-      promotedtoPiecePoints: -1,
+      pawnPromotedtoPoints: -1,
       color: i % 2 == 0 ? "white" : "black",
       moveNumber: i,
       enPassantBool: false,
       cutPieceBool: false,
       promotionBool: false,
-      promotedtoPiece: "",
+      pawnPromotedto: "",
       checkBool: false,
       castleBool: false,
       castleType: "",
@@ -1608,17 +1659,17 @@ function decodePGN() {
           let localePointMultplierNumber =
             lastMovePGN.color === "black" ? -1 : 1;
           if (moveStrdecodePGN[j + 1] === "N") {
-            lastMovePGN.promotedtoPiece = "knight";
-            lastMovePGN.promotedtoPiecePoints = 3 * localePointMultplierNumber;
+            lastMovePGN.pawnPromotedto = "knight";
+            lastMovePGN.pawnPromotedtoPoints = 3 * localePointMultplierNumber;
           } else if (moveStrdecodePGN[j + 1] === "R") {
-            lastMovePGN.promotedtoPiece = "rook";
-            lastMovePGN.promotedtoPiecePoints = 5 * localePointMultplierNumber;
+            lastMovePGN.pawnPromotedto = "rook";
+            lastMovePGN.pawnPromotedtoPoints = 5 * localePointMultplierNumber;
           } else if (moveStrdecodePGN[j + 1] === "B") {
-            lastMovePGN.promotedtoPiece = "bishop";
-            lastMovePGN.promotedtoPiecePoints = 3 * localePointMultplierNumber;
+            lastMovePGN.pawnPromotedto = "bishop";
+            lastMovePGN.pawnPromotedtoPoints = 3 * localePointMultplierNumber;
           } else if (moveStrdecodePGN[j + 1] === "Q") {
-            lastMovePGN.promotedtoPiece = "queen";
-            lastMovePGN.promotedtoPiecePoints = 9 * localePointMultplierNumber;
+            lastMovePGN.pawnPromotedto = "queen";
+            lastMovePGN.pawnPromotedtoPoints = 9 * localePointMultplierNumber;
           }
         }
       }
@@ -1723,16 +1774,16 @@ function makeBoardViaPGN(lastMovePGN) {
     }
     if (lastMovePGN.promotionBool) {
       pointCount[color + "pawn"]--;
-      pointCount[color + lastMovePGN.promotedtoPiece]++;
-      pointCountInit[color + lastMovePGN.promotedtoPiece]++;
+      pointCount[color + lastMovePGN.pawnPromotedto]++;
+      pointCountInit[color + lastMovePGN.pawnPromotedto]++;
       isLoadingPGNPawnPromotionJSON = {
         row: lastMovePGN.newrow,
         col: lastMovePGN.newcol,
         json: {
-          piece: lastMovePGN.promotedtoPiece,
+          piece: lastMovePGN.pawnPromotedto,
           color: color,
-          key: lastMovePGN.promotedtoPiece + "+" + color + ".png",
-          points: lastMovePGN.promotedtoPiecePoints,
+          key: lastMovePGN.pawnPromotedto + "+" + color + ".png",
+          points: lastMovePGN.pawnPromotedtoPoints,
         },
       };
     } else isLoadingPGNPawnPromotionJSON = {};
@@ -1759,7 +1810,6 @@ function makeBoardViaPGN(lastMovePGN) {
   playMovePGN(newMoveLoad);
 }
 function playMovePGN(newMoveLoad) {
-  console.log(newMoveLoad);
   prevrow = -1;
   prevcol = -1;
   boardClick(newMoveLoad.prevrow, newMoveLoad.prevcol);
@@ -2346,141 +2396,6 @@ function minimax() {
 }
 
 // Drag and Drop
-function makeCell(row, col) {
-  let pieceStr = "";
-  let possibleMoveStr = "";
-  let extraInfoStr = "";
-  let labelStr =
-    col === 0 ? "<div class='p-1 label-col-box'>" + (8 - row) + "</div>" : "";
-  num = showMovesArr.findIndex(function (ele) {
-    return ele.row === row && ele.col === col;
-  });
-  if (Object.keys(boardArr[row][col]).length != 0) {
-    pieceStr =
-      "<img src='" +
-      imagePath +
-      boardArr[row][col].key +
-      "' draggable='true' ondragstart='drag(event, " +
-      row +
-      ", " +
-      col +
-      ")' onclick='hello(" +
-      row +
-      "," +
-      col +
-      ")'>";
-  }
-  if (num != -1 && legalBool) {
-    if (Object.keys(boardArr[row][col]).length != 0) {
-      possibleMoveStr =
-        "<svg xmlns='http://www.w3.org/2000/svg' class='possible-move-square' viewBox='0 0 80 80' width='80' height='80'><circle cx='40' cy='40' r=" +
-        highlightDotRadius +
-        " fill='rgba(256, 100, 100, 0.4)'/></svg>";
-    } else {
-      possibleMoveStr =
-        "<svg xmlns='http://www.w3.org/2000/svg' class='possible-move-square' viewBox='0 0 80 80' width='80' height='80'><circle cx='40' cy='40' r=" +
-        highlightDotRadius +
-        " fill='rgba(100, 100, 100, 0.4)'/></svg>";
-    }
-  }
-  if (row === 0 && col === 0) {
-    extraInfoStr = "-top-start";
-  } else if (row === 7 && col === 0) {
-    extraInfoStr = "-bottom-start";
-  } else if (row === 0 && col === 7) {
-    extraInfoStr = "-top-end";
-  } else if (row === 7 && col === 7) {
-    extraInfoStr = "-bottom-end";
-  }
-  if (prevrow === row && prevcol === col && highlightPieceBool) {
-    cellColor = (row + col) % 2 === 0 ? clr1x : clr2x;
-  } else if (
-    pgnArr.length != 0 &&
-    pgnArr[pgnArr.length - 1].prevrow === row &&
-    pgnArr[pgnArr.length - 1].prevcol === col &&
-    highlightPreviousBool
-  ) {
-    cellColor = (row + col) % 2 === 0 ? clr1p : clr2p;
-  } else if (
-    pgnArr.length != 0 &&
-    pgnArr[pgnArr.length - 1].newrow === row &&
-    pgnArr[pgnArr.length - 1].newcol === col &&
-    highlightPreviousBool
-  ) {
-    cellColor = (row + col) % 2 === 0 ? clr1p : clr2p;
-  } else {
-    cellColor = (row + col) % 2 === 0 ? clr1 : clr2;
-  }
-  if (underCheck.bool && underCheck.posx === row && underCheck.posy === col) {
-    cellColor = (row + col) % 2 === 0 ? clr1c : clr2c;
-    if (prevrow === row && prevcol === col && highlightPieceBool) {
-      cellColor = (row + col) % 2 === 0 ? clr1x : clr2x;
-    }
-  }
-  possibleMoveStr = "";
-  return (
-    labelStr +
-    "<div class='cellBox cellBorder" +
-    extraInfoStr +
-    "' id='cell-" +
-    row +
-    "-" +
-    col +
-    "' ondrop='drop(event, " +
-    row +
-    ", " +
-    col +
-    ")' ondragover='allowDrop(event)' onclick='boardClick(" +
-    row +
-    "," +
-    col +
-    ")' style='background-color: " +
-    cellColor +
-    "'>" +
-    pieceStr +
-    possibleMoveStr +
-    "</div>"
-  );
-}
-function highlightMoveCells() {
-  let possibleMoveStr = "";
-  for (let row = 0; row <= 7; row++) {
-    for (let col = 0; col <= 7; col++) {
-      possibleMoveStr = "";
-      num = showMovesArr.findIndex(function (ele) {
-        return ele.row === row && ele.col === col;
-      });
-      if (num != -1 && legalBool) {
-        if (Object.keys(boardArr[row][col]).length != 0) {
-          possibleMoveStr =
-            "<svg xmlns='http://www.w3.org/2000/svg' class='possible-move-square' viewBox='0 0 80 80' width='80' height='80'><circle cx='40' cy='40' r=" +
-            highlightDotRadius +
-            " fill='rgba(256, 100, 100, 0.4)'/></svg>";
-        } else {
-          possibleMoveStr =
-            "<svg xmlns='http://www.w3.org/2000/svg' class='possible-move-square' viewBox='0 0 80 80' width='80' height='80'><circle cx='40' cy='40' r=" +
-            highlightDotRadius +
-            " fill='rgba(100, 100, 100, 0.4)'/></svg>";
-        }
-      }
-      if (possibleMoveStr.length > 0)
-        document
-          .getElementById("cell-" + row + "-" + col)
-          .insertAdjacentHTML("beforeend", possibleMoveStr);
-    }
-  }
-  highlightSelectedCell();
-}
-function highlightSelectedCell() {
-  let row = prevrow;
-  let col = prevcol;
-  cellColor = (row + col) % 2 === 0 ? clr1x : clr2x;
-  if (underCheck.bool && underCheck.posx === row && underCheck.posy === col) {
-    cellColor = (row + col) % 2 === 0 ? clr1x : clr2x;
-  }
-  let element = document.getElementById("cell-" + row + "-" + col);
-  element.setAttribute("style", "background-color:" + cellColor + ";");
-}
 function allowDrop(event) {
   event.preventDefault();
   //console.log("allowDrop", event);
