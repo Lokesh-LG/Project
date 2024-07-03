@@ -130,6 +130,7 @@ function dataReload() {
     ],
   ];
   leftBarOpenStatus = [false, false, false];
+  userNewMoveClick = false;
 }
 
 //Routine Function Calls
@@ -332,7 +333,7 @@ function makeCell(row, col) {
     row +
     ", " +
     col +
-    ")' ondragover='allowDrop(event)' onclick='boardClick(" +
+    ")' ondragover='allowDrop(event)' onclick='boardClickByUser(" +
     row +
     "," +
     col +
@@ -731,6 +732,11 @@ function changeColorRightBarTd(td) {
 }
 
 //Board Logic
+function boardClickByUser(row, col) {
+  userNewMoveClick = true;
+  boardClick(row, col);
+  userNewMoveClick = false;
+}
 function boardClick(row, col) {
   // console.log(prevrow, prevcol, row, col);
   closeOptionsLeftDD();
@@ -807,6 +813,9 @@ function boardClick(row, col) {
         boardArr[isLoadingPGNPawnPromotionJSON.row][
           isLoadingPGNPawnPromotionJSON.col
         ] = isLoadingPGNPawnPromotionJSON.json;
+        lastMoveJSON.promotionBool = true;
+        lastMoveJSON.pawnPromotedto = isLoadingPGNPawnPromotionJSON.json.piece;
+        isLoadingPGNPawnPromotionJSON = {};
         missingPiecesUpdate();
       }
       moveCount++;
@@ -817,6 +826,7 @@ function boardClick(row, col) {
       lastMoveJSON.checkBool = underCheck.bool;
       if (localePgnGenerationStopBool) {
         pgnArr.push(lastMoveJSON);
+        if (userNewMoveClick) redoMoveArr.splice(0, redoMoveArr.length);
       }
       makePGN();
       makeBoard();
@@ -1441,6 +1451,7 @@ function redoMove() {
   }
   let localeLastMove = redoMoveArr.pop();
   comingFromRedoMoveBool = true;
+  console.log(localeLastMove);
   makeBoardViaPGN(localeLastMove);
 }
 
