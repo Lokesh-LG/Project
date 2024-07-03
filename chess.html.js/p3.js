@@ -2469,6 +2469,17 @@ function highlightMoveCells() {
           .insertAdjacentHTML("beforeend", possibleMoveStr);
     }
   }
+  highlightSelectedCell();
+}
+function highlightSelectedCell() {
+  let row = prevrow;
+  let col = prevcol;
+  cellColor = (row + col) % 2 === 0 ? clr1x : clr2x;
+  if (underCheck.bool && underCheck.posx === row && underCheck.posy === col) {
+    cellColor = (row + col) % 2 === 0 ? clr1x : clr2x;
+  }
+  let element = document.getElementById("cell-" + row + "-" + col);
+  element.setAttribute("style", "background-color:" + cellColor + ";");
 }
 function allowDrop(event) {
   event.preventDefault();
@@ -2483,7 +2494,16 @@ function drag(event, row, col) {
 function drop(event, row, col) {
   event.preventDefault();
   console.log("Drop", event, row, col);
-  boardClick(row, col);
+  let num = showMovesArr.findIndex(function (ele) {
+    return ele.row === row && ele.col === col;
+  });
+  if (num >= 0) boardClick(row, col);
+  else {
+    showMovesArr.splice(0, showMovesArr.length);
+    prevrow = -1;
+    prevcol = -1;
+    makeBoard();
+  }
 }
 // function drop(event, row, col) {
 //   event.preventDefault();
