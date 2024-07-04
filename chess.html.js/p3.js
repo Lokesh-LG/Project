@@ -202,6 +202,7 @@ function navActions(index) {
     }
     makeStartBoard();
     makeBoard();
+    makeRightBar();
   } else {
     if (time === "") {
       document.getElementById("leftbar").innerHTML = "";
@@ -390,6 +391,7 @@ function makeBoard() {
     str +=
       "<div class='container'><div class='row row-cols-8 justify-content-center'>";
     for (j = 0; j <= 7; j++) str = str += makeCell(i, j);
+
     str += "</div></div>";
   }
   let labelArrMap = labelArr.map(function (ele) {
@@ -605,6 +607,9 @@ function makeLeftDD(ele, index1, isOpen) {
         (isOpen ? "fa-caret-up" : "fa-caret-down") +
         "'></i>"
       : "") +
+    (ele.txt !== leftBarArrAll[index1].txt
+      ? "<i class='align-right-fa-icon fas fa-caret-up'></i>"
+      : "") +
     "</button>" +
     "<div class='w-100' role='group' id='dd" +
     (index1 + 1) +
@@ -637,6 +642,10 @@ function closeOptionsLeftDD() {
   makeLeftBar();
 }
 function showOptionsLeftDD(index1, index2) {
+  if (virtualBoardStr != "") {
+    showCustomAlert("Please Select Piece To Promote");
+    return;
+  }
   if (index2 === -1) {
     leftBarOpenStatus = leftBarOpenStatus.map(function (ele, index3) {
       return index3 === index1 ? !ele : false;
@@ -738,7 +747,7 @@ function boardClickByUser(row, col) {
   userNewMoveClick = false;
 }
 function boardClick(row, col) {
-  // console.log(prevrow, prevcol, row, col);
+  //console.log(prevrow, prevcol, row, col);
   closeOptionsLeftDD();
   if (!comingFromRedoMoveBool) lastMoveUndoMoveBool = false;
   if (prevrow === -1 || prevcol === -1) {
@@ -751,7 +760,6 @@ function boardClick(row, col) {
       showValidMoves();
       inCheckCondition(boardArr[row][col].color);
       if (boardArr[prevrow][prevcol].piece === "king") checkCastle();
-      //makeBoard();
       highlightMoveCells();
     }
   } else if (prevrow === row && prevcol === col) {
@@ -1120,31 +1128,44 @@ function pawnPromotion(row, col, color) {
   str = "";
   for (i = 0; i <= 7; i++) {
     str +=
-      "<div class='container' style='background-color: rgba(0,0,0,0.6)'><div class='row row-cols-8 justify-content-center'>";
-    for (j = 0; j <= 7; j++) str = str += makeVirtualCell(i, j);
+      "<div class='container'><div class='row row-cols-8 justify-content-center'>";
+    for (j = 0; j <= 7; j++) str += makeVirtualCell(i, j, false);
     str += "</div></div>";
+  }
+  strPiece = "";
+  for (i = 0; i <= 7; i++) {
+    strPiece +=
+      "<div class='container'><div class='row row-cols-8 justify-content-center'>";
+    for (j = 0; j <= 7; j++) strPiece += makeVirtualCell(i, j, true);
+    strPiece += "</div></div>";
   }
   let labelArrMap = labelArr.map(function (ele) {
     return "<div class='virtualBox abcd-label'></div>";
   });
   virtualBoardStr =
-    "<div class = 'containerFrame-virtual'>" +
+    "<div class = 'containerFrame-virtual containerFrame-virtual-z-index-low'>" +
     str +
-    "<div class='row row-cols-8 abcd-label-padding' style = 'background-color : rgba(0,0,0,0.6)'>" +
+    "<div class='row row-cols-8 abcd-label-height-adjustment-virtual-black-cover abcd-label-padding' style='background-color: rgba(0,0,0,0.6)'>" +
     labelArrMap.join("") +
     "</div></div>";
+  virtualBoardStr +=
+    "<div class = 'containerFrame-virtual containerFrame-virtual-pieces-z-index-high'>" +
+    strPiece +
+    "<div class='row row-cols-8 abcd-label-height-adjustment-virtual-black-cover abcd-label-padding' style='background-color: rgba(0,0,0,0.6)'>" +
+    labelArrMap.join("") +
+    "</div></div>";
+
   makeBoard();
 }
-function makeVirtualCell(row, col) {
+function makeVirtualCell(row, col, showPieceBool) {
   let pieceStr = "";
   let colorStr = "";
   let extraInfoStr = "";
   let onclickStr = "";
-  let labelStr = col === 0 ? "<div class = 'p-1 label-col-box'></div>" : "";
   num = showMovesArr.findIndex(function (ele) {
     return ele.row === row && ele.col === col;
   });
-  if (Object.keys(virtualBoardArr[row][col]).length != 0)
+  if (showPieceBool && Object.keys(virtualBoardArr[row][col]).length != 0)
     pieceStr =
       "<img src = '" +
       imagePath +
@@ -1163,14 +1184,26 @@ function makeVirtualCell(row, col) {
   } else if (row === 7 && col === 7) {
     extraInfoStr = "-bottom-end";
   }
-  if (Object.keys(virtualBoardArr[row][col]).length != 0) {
+  let labelStr =
+    col === 0
+      ? "<div class = 'p-1 label-col-box virtualBorder" +
+        extraInfoStr +
+        "' style='background-color: rgba(0,0,0,0.6)'></div>"
+      : "";
+  if (showPieceBool && Object.keys(virtualBoardArr[row][col]).length != 0) {
     colorStr =
       virtualBoardArr[row][col].color === "white"
-        ? " gradient-circle-white'"
-        : " gradient-circle-black'";
+        ? " gradient-circle gradient-circle-white'"
+        : " gradient-circle gradient-circle-black'";
     onclickStr = " onclick = pawnPromotionClick(" + row + "," + col + ")>";
+  } else if (Object.keys(virtualBoardArr[row][col]).length != 0) {
+    colorStr = "'  style='background-color: rgba(0,0,0,0.6)'";
+    onclickStr = " >";
+  } else if (showPieceBool) {
+    colorStr = "'  ";
+    onclickStr = " >";
   } else {
-    colorStr = "'";
+    colorStr = "'  style='background-color: rgba(0,0,0,0.6)'";
     onclickStr = " >";
   }
   return (
@@ -1310,9 +1343,11 @@ function castleMove(row, col, color) {
   if (col > prevcol && castleBool["short" + color]) {
     boardArr[row][5] = boardArr[row][7];
     boardArr[row][7] = {};
+    lastMoveJSON.castleType = "short";
   } else if (col < prevcol && castleBool["long" + color]) {
     boardArr[row][3] = boardArr[row][0];
     boardArr[row][0] = {};
+    lastMoveJSON.castleType = "long";
   }
 }
 
@@ -1332,6 +1367,7 @@ function lastMove(row, col) {
     promotionBool: false,
     castleBool: false,
     castleDisable: -1,
+    castleType: "",
     pawnPromotedto: "",
     ambiguityBoolColSame: checkAmbiguityLastMove(row, col, "Col"),
     ambiguityBool: checkAmbiguityLastMove(row, col, "Basic"),
@@ -1445,6 +1481,10 @@ function undoMove() {
   highlightPieceBool = true;
 }
 function redoMove() {
+  if (virtualBoardStr != "") {
+    showCustomAlert("Please Select Piece To Promote");
+    return;
+  }
   if (!lastMoveUndoMoveBool || redoMoveArr.length === 0) {
     showCustomAlert("Please Undo Move");
     return;
@@ -1597,6 +1637,13 @@ function makePGN() {
 function importGame() {
   makeStartBoard();
   pgnStr = document.getElementById("moveHistory").value;
+  if (pgnStr === "/pp") pgnStr = " 1.e4 d5 2.exd5 c6 3.dxc6 a6 4.cxb7 a5 ";
+  if (pgnStr === "/fc")
+    pgnStr =
+      " 1.e4 e5 2.Nc3 Nc6 3.Nf3 Nf6 4.Nd5 Nd4 5.Ne3 Ne6 6.Nf5 Nf4 7.N5d4 N4d5 8.d3 d6 9.Bf4 Be7 10.Be2 Bf5 11.exf5 exf4 12.Ne5 dxe5 13.O-O Ne4 14.dxe4 f3 15.f6 O-O 16.fxe7 fxe2 17.exd8=R exd1=R 18.Rfxd1 Raxd8 19.Nc6 Ne7 20.Rxd8 Rxd8 21.Rd1 Rxd1+";
+  if (pgnStr === "/lc")
+    pgnStr =
+      "1.e4 d5 2.exd5 c6 3.dxc6 a6 4.cxb7 a5 5.bxa8=B Bg4 6.Nc3 Qxd2+ 7.Qxd2";
   //document.getElementById("dd3").value = leftBarArr3[0];
   showPGN();
   decodePGN();
@@ -1700,7 +1747,8 @@ function decodePGN() {
       if (lastMovePGN.ambiguityBool) {
         if (moveStrdecodePGN[1] >= "0" && moveStrdecodePGN[1] <= "9") {
           lastMovePGN.ambiguityBoolColSame = true;
-          lastMovePGN.prevrow = +moveStrdecodePGN[1];
+          //lastMovePGN.prevrow = +moveStrdecodePGN[1];
+          lastMovePGN.prevrow = 8 - moveStrdecodePGN[1];
         } else {
           let indexCol = colPgn.findIndex(function (ele) {
             return ele === moveStrdecodePGN[1];
@@ -1729,6 +1777,7 @@ function decodePGN() {
   }
 }
 function makeBoardViaPGN(lastMovePGN) {
+  console.log(lastMovePGN);
   let newMoveLoad = { prevrow: -1, prevcol: -1, newrow: -1, newcol: -1 };
   let ogprevDetails = [];
   let pieceArr = [];
@@ -1822,6 +1871,7 @@ function makeBoardViaPGN(lastMovePGN) {
   playMovePGN(newMoveLoad);
 }
 function playMovePGN(newMoveLoad) {
+  console.log(newMoveLoad);
   prevrow = -1;
   prevcol = -1;
   boardClick(newMoveLoad.prevrow, newMoveLoad.prevcol);
@@ -2054,27 +2104,39 @@ function colorChanged(index) {
 }
 function changePieceType() {
   let menuStr =
-    "<div class='btn-group-horizontal radio-piece-class justify-content-center' role='group'><input type='radio' class='btn-check' name='radio1' id='r0' autocomplete='off' checked><label class='btn btn-outline-light' for='r0'><img src = '" +
+    "<div class='btn-group-horizontal radio-piece-class justify-content-center' role='group'><input type='radio' class='btn-check' name='radio1' id='r0' autocomplete='off' " +
+    (imagePath === baseImagePath + pieceImagePaths[0] ? "checked" : "") +
+    "><label class='btn btn-outline-light' for='r0'><img src = '" +
     baseImagePath +
     pieceImagePaths[0] +
     pieceImageArr[0] +
-    "' class = 'radio-img-piece'></label><input type='radio' class='btn-check' name='radio1' id='r1' autocomplete='off' ><label class='btn btn-outline-light' for='r1'><img src = '" +
+    "' class = 'radio-img-piece'></label><input type='radio' class='btn-check' name='radio1' id='r1' autocomplete='off'" +
+    (imagePath === baseImagePath + pieceImagePaths[1] ? "checked" : "") +
+    "><label class='btn btn-outline-light' for='r1'><img src = '" +
     baseImagePath +
     pieceImagePaths[1] +
     pieceImageArr[0] +
-    "' class = 'radio-img-piece'></label><input type='radio' class='btn-check' name='radio1' id='r2' autocomplete='off' ><label class='btn btn-outline-light' for='r2'><img src = '" +
+    "' class = 'radio-img-piece'></label><input type='radio' class='btn-check' name='radio1' id='r2' autocomplete='off'" +
+    (imagePath === baseImagePath + pieceImagePaths[2] ? "checked" : "") +
+    " ><label class='btn btn-outline-light' for='r2'><img src = '" +
     baseImagePath +
     pieceImagePaths[2] +
     pieceImageArr[0] +
-    "' class = 'radio-img-piece'></label><input type='radio' class='btn-check' name='radio1' id='r3' autocomplete='off' ><label class='btn btn-outline-light' for='r3'><img src = '" +
+    "' class = 'radio-img-piece'></label><input type='radio' class='btn-check' name='radio1' id='r3' autocomplete='off'" +
+    (imagePath === baseImagePath + pieceImagePaths[3] ? "checked" : "") +
+    " ><label class='btn btn-outline-light' for='r3'><img src = '" +
     baseImagePath +
     pieceImagePaths[3] +
     pieceImageArr[0] +
-    "' class = 'radio-img-piece'></label><input type='radio' class='btn-check' name='radio1' id='r4' autocomplete='off' ><label class='btn btn-outline-light' for='r4'><img src = '" +
+    "' class = 'radio-img-piece'></label><input type='radio' class='btn-check' name='radio1' id='r4' autocomplete='off'" +
+    (imagePath === baseImagePath + pieceImagePaths[4] ? "checked" : "") +
+    " ><label class='btn btn-outline-light' for='r4'><img src = '" +
     baseImagePath +
     pieceImagePaths[4] +
     pieceImageArr[0] +
-    "' class = 'radio-img-piece'></label><input type='radio' class='btn-check' name='radio1' id='r5' autocomplete='off' ><label class='btn btn-outline-light' for='r5'><img src = '" +
+    "' class = 'radio-img-piece'></label><input type='radio' class='btn-check' name='radio1' id='r5' autocomplete='off'" +
+    (imagePath === baseImagePath + pieceImagePaths[5] ? "checked" : "") +
+    " ><label class='btn btn-outline-light' for='r5'><img src = '" +
     baseImagePath +
     pieceImagePaths[5] +
     pieceImageArr[0] +
@@ -2227,7 +2289,10 @@ function showLegalMoveSetting() {
 
 //LeftBar dd3
 function showPGN() {
-  if (pgnStr === "") showCustomAlert("Please Play a Move First");
+  if (pgnStr === "") {
+    showCustomAlert("Please Play a Move First");
+    showOptionsLeftDD(-1, -1);
+  }
   let menuStr = "<p class = 'pgn-block'>" + pgnStr + "</p>";
   if (pgnStr.length != 0) {
     menuStr +=
@@ -2250,20 +2315,28 @@ function showPGN() {
 }
 function importPGNUI() {
   let menuStr =
-    "<span class = 'text-area-block w-100 justify-content-center'>Enter PGN : </span><div class='input-group'><textarea class='input-group-text text-area-block w-100' id='moveHistory'></textarea></div><button class = 'p-3 btn btn-light btn-green w-100 h-100' onclick = 'importGame()'><i class='fa-solid fa-upload'></i> Load Game</button>";
+    "<span class = 'text-area-block w-100 justify-content-center'>Enter PGN : </span><div class='input-group'><textarea class='input-group-text text-area-block w-100' id='moveHistory'></textarea></div><button class = 'p-3 btn btn-light btn-green w-100 h-100' id='importGameBtn' onclick = 'importGame()' disabled><i class='fa-solid fa-upload'></i> Load Game</button>";
   document.getElementById("dd3menu").innerHTML = menuStr;
   const textarea = document.getElementById("moveHistory");
-  function adjustTextareaHeight() {
-    textarea.style.height = "auto";
-    textarea.style.height = textarea.scrollHeight + "px";
-  }
   textarea.addEventListener("input", adjustTextareaHeight);
   textarea.addEventListener("paste", adjustTextareaHeight);
   adjustTextareaHeight();
 }
+function adjustTextareaHeight() {
+  const textarea = document.getElementById("moveHistory");
+  textarea.style.height = "auto";
+  textarea.style.height = textarea.scrollHeight + "px";
+  let btnElement = document.getElementById("importGameBtn");
+  if (textarea && textarea.value.length > 0) btnElement.disabled = false;
+  else btnElement.disabled = true;
+}
 
 //UI RightBar Actions
 function copyPGN() {
+  if (virtualBoardStr != "") {
+    showCustomAlert("Please Select Piece To Promote");
+    return;
+  }
   const textToCopy = pgnStr;
   navigator.clipboard
     .writeText(textToCopy)
@@ -2275,18 +2348,39 @@ function copyPGN() {
     });
 }
 function backwardFastPGN() {
+  if (virtualBoardStr != "") {
+    showCustomAlert("Please Select Piece To Promote");
+    return;
+  }
   a = 10;
 }
 function backwardStepPGN() {
+  if (virtualBoardStr != "") {
+    showCustomAlert("Please Select Piece To Promote");
+    return;
+  }
   a = 10;
 }
 function forwardStepPGN() {
+  if (virtualBoardStr != "") {
+    showCustomAlert("Please Select Piece To Promote");
+    return;
+  }
   a = 10;
 }
 function forwardFastPGN() {
+  if (virtualBoardStr != "") {
+    showCustomAlert("Please Select Piece To Promote");
+    return;
+  }
+
   a = 10;
 }
 function flipBoard() {
+  if (virtualBoardStr != "") {
+    showCustomAlert("Please Select Piece To Promote");
+    return;
+  }
   let flipBoardArr = boardArrLine.map(function (ele) {
     return [...boardArrLine];
   });
@@ -2417,6 +2511,7 @@ function drag(event, row, col) {
   // Call boardClick to show possible moves
   console.log("Drag", event, row, col);
   boardClick(row, col);
+  return false;
 }
 function drop(event, row, col) {
   event.preventDefault();
@@ -2674,3 +2769,6 @@ function autoPlay(depth) {
   console.log(movesSimulated);
   console.log(newMove);
 }
+
+//1.e4 d5 2.exd5 c6 3.dxc6 a6 4.cxb7 a5 5.bxa8=B Bg4 6.Nc3 Qxd2+ 7.Qxd2
+//1.e4 e5 2.Nc3 Nc6 3.Nf3 Nf6 4.Nd5 Nd4 5.Ne3 Ne6 6.Nf5 Nf4 7.N5d4 N4d5 8.d3 d6 9.Bf4 Be7 10.Be2 Bf5 11.exf5 exf4 12.Ne5 dxe5 13.O-O Ne4 14.dxe4 f3 15.f6 O-O 16.fxe7 fxe2 17.exd8=R exd1=R 18.Rfxd1 Raxd8 19.Nc6 Ne7 20.Rxd8 Rxd8 21.Rd1 Rxd1+

@@ -93,7 +93,12 @@ select {
   padding-left: auto;
   padding-top: 15px;
   position: absolute;
+}
+.containerFrame-virtual-z-index-low {
   z-index: 2;
+}
+.containerFrame-virtual-pieces-z-index-high {
+  z-index: 3;
 }
 .btn-block {
   padding: 0;
@@ -381,6 +386,14 @@ select {
   height: fit-content;
   border: none;
 }
+.abcd-label-height-adjustment-virtual-black-cover {
+  height: 22px;
+  border: none;
+  width: 89.1%;
+  margin-left: 6.8%;
+  border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
 .abcd-label-padding {
   padding-left: 60px;
 }
@@ -446,7 +459,6 @@ select {
   background-color: rgba(192, 256, 256, 0.2);
   border: 1px solid rgba(0, 256, 256, 0.4);
 }
-
 .menu-block {
   background-color: rgba(128, 128, 128, 0.1);
   border: 1px solid rgba(0, 0, 0, 0.9);
@@ -484,9 +496,9 @@ select {
   margin-bottom: 0px;
 }
 .form-control-color-pkr {
-  border: 0.5px solid rgba(0, 0, 0, 0.9); /* Black border */
+  border: 0.5px solid rgba(0, 0, 0, 0.9);
   background-color: rgba(128, 128, 128, 0.1);
-  color: #ffffff; /* Light text color for the input */
+  color: #ffffff;
   min-height: 45px;
 }
 input[type="color"] {
@@ -628,7 +640,7 @@ input[type="range"]::-webkit-slider-thumb {
   justify-content: center;
   align-items: center;
   position: relative;
-  z-index: 2;
+  z-index: 1;
 }
 .virtualBorder-top-start {
   border-top-left-radius: 10px;
@@ -642,31 +654,28 @@ input[type="range"]::-webkit-slider-thumb {
 .virtualBorder-bottom-end {
   border-bottom-right-radius: 10px;
 }
-.gradient-circle-white {
+.gradient-circle {
   width: 80px;
   height: 80px;
   border: none;
   outline: none;
-  box-shadow: 1px #e1e1e1;
-  clip-path: circle(50%);
-  background: radial-gradient(#f6f6f6, #ececec, #e1e1e1, #d0d0d0, #cccccc);
-  background-color: rgba(0, 0, 0, 0.5);
+  clip-path: inset(0%);
+  background: rgba(0, 0, 0, 0.6);
   position: relative;
-  z-index: 2;
+  /*z-index: 2;*/
   transition: all 0.3s ease;
 }
+.gradient-circle-white {
+  box-shadow: 1px #e1e1e1;
+  clip-path: circle(50% at center);
+  background: radial-gradient(#f6f6f6, #ececec, #e1e1e1, #d0d0d0, #cccccc);
+  /*z-index: 3;*/
+}
 .gradient-circle-black {
-  width: 80px;
-  height: 80px;
-  border: none;
-  outline: none;
   box-shadow: 1px #555555;
   clip-path: circle(50% at center);
   background: radial-gradient(#aaaaaa, #888888, #666666, #444444, #222222);
-  background-color: rgba(0, 0, 0, 0.5);
-  position: relative;
-  z-index: 2;
-  transition: all 0.3s ease;
+  z-index: 3;
 }
 .gradient-circle-white:hover {
   clip-path: inset(0%);
