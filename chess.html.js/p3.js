@@ -131,6 +131,7 @@ function dataReload() {
   ];
   leftBarOpenStatus = [false, false, false];
   userNewMoveClick = false;
+  previousHighlightData = {};
 }
 
 //Routine Function Calls
@@ -354,15 +355,30 @@ function highlightMoveCells() {
       num = showMovesArr.findIndex(function (ele) {
         return ele.row === row && ele.col === col;
       });
+      numNotShow = -1;
+      if (previousHighlightData.showMovesArr)
+        numNotShow = previousHighlightData.showMovesArr.findIndex(function (
+          ele
+        ) {
+          return ele.row === row && ele.col === col;
+        });
       if (num != -1 && legalBool) {
         if (Object.keys(boardArr[row][col]).length != 0) {
           possibleMoveStr =
-            "<svg xmlns='http://www.w3.org/2000/svg' class='possible-move-square' viewBox='0 0 80 80' width='80' height='80'><circle cx='40' cy='40' r=" +
+            "<svg id='cellHighlight-" +
+            row +
+            "-" +
+            col +
+            "' xmlns='http://www.w3.org/2000/svg' class='possible-move-square' viewBox='0 0 80 80' width='80' height='80'><circle cx='40' cy='40' r=" +
             highlightDotRadius +
-            " fill='rgba(256, 100, 100, 0.4)'/></svg>";
+            " fill='rgba(256, 100, 100, 0.4)'/></svg></span>";
         } else {
           possibleMoveStr =
-            "<svg xmlns='http://www.w3.org/2000/svg' class='possible-move-square' viewBox='0 0 80 80' width='80' height='80'><circle cx='40' cy='40' r=" +
+            "<svg id='cellHighlight-" +
+            row +
+            "-" +
+            col +
+            "' xmlns='http://www.w3.org/2000/svg' class='possible-move-square' viewBox='0 0 80 80' width='80' height='80'><circle cx='40' cy='40' r=" +
             highlightDotRadius +
             " fill='rgba(100, 100, 100, 0.4)'/></svg>";
         }
@@ -371,9 +387,17 @@ function highlightMoveCells() {
         document
           .getElementById("cell-" + row + "-" + col)
           .insertAdjacentHTML("beforeend", possibleMoveStr);
+      if (numNotShow != -1 && numNotShow != num) {
+        let element = document.getElementById(
+          "cellHighlight-" + row + "-" + col
+        );
+        if (element) element.remove();
+      }
     }
   }
   highlightSelectedCell();
+  if (previousHighlightData.showMovesArr) unhighlightPreviousSelectedCell();
+  previousHighlightData = {};
 }
 function highlightSelectedCell() {
   let row = prevrow;
@@ -383,6 +407,32 @@ function highlightSelectedCell() {
     cellColor = (row + col) % 2 === 0 ? clr1x : clr2x;
   }
   let element = document.getElementById("cell-" + row + "-" + col);
+  element.setAttribute("style", "background-color:" + cellColor + ";");
+}
+function unhighlightPreviousSelectedCell() {
+  let row = previousHighlightData.prevrow;
+  let col = previousHighlightData.prevcol;
+  cellColor = "";
+  if (
+    pgnArr.length != 0 &&
+    pgnArr[pgnArr.length - 1].prevrow === row &&
+    pgnArr[pgnArr.length - 1].prevcol === col &&
+    highlightPreviousBool
+  )
+    cellColor = (row + col) % 2 === 0 ? clr1p : clr2p;
+  else if (
+    pgnArr.length != 0 &&
+    pgnArr[pgnArr.length - 1].newrow === row &&
+    pgnArr[pgnArr.length - 1].newcol === col &&
+    highlightPreviousBool
+  )
+    cellColor = (row + col) % 2 === 0 ? clr1p : clr2p;
+  else cellColor = (row + col) % 2 === 0 ? clr1 : clr2;
+  if (underCheck.bool && underCheck.posx === row && underCheck.posy === col) {
+    cellColor = (row + col) % 2 === 0 ? clr1c : clr2c;
+  }
+  let element = document.getElementById("cell-" + row + "-" + col);
+  console.log("unhighlightPreviousSelectedCell", row, col);
   element.setAttribute("style", "background-color:" + cellColor + ";");
 }
 function makeBoard() {
@@ -2517,6 +2567,13 @@ function allowDrop(event) {
 }
 function drag(event, row, col) {
   event.dataTransfer.setData("text/plain", event.target.id);
+  if (prevrow != -1 || prevcol != -1) {
+    previousHighlightData = {
+      prevrow: prevrow,
+      prevcol: prevcol,
+      showMovesArr: [...showMovesArr],
+    };
+  } else previousHighlightData = {};
   prevrow = -1;
   prevcol = -1;
   boardClick(row, col);
