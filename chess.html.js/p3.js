@@ -386,6 +386,9 @@ function highlightSelectedCell() {
   element.setAttribute("style", "background-color:" + cellColor + ";");
 }
 function makeBoard() {
+  let storehighlightPreviousBool = highlightPreviousBool;
+  highlightPreviousBool = virtualBoardStr ? false : highlightPreviousBool;
+  console.log("makeBoard highlightPreviousBool=", highlightPreviousBool);
   str = "";
   for (i = 0; i <= 7; i++) {
     str +=
@@ -408,6 +411,7 @@ function makeBoard() {
       "<div class='containerFrame'><button type='button' class='p-3 btn btn-light w-100 h-100 btn-block-red' onclick='switchNavTab_MakeTimer()'>Go To Select Time</button></div>";
   }
   document.getElementById("display").innerHTML = displayStr + virtualBoardStr;
+  highlightPreviousBool = storehighlightPreviousBool;
 }
 function confirmedTime() {
   if (document.getElementById("timeLimit").innerHTML === "Select Time") {
@@ -1154,7 +1158,7 @@ function pawnPromotion(row, col, color) {
     "<div class='row row-cols-8 abcd-label-height-adjustment-virtual-black-cover abcd-label-padding' style='background-color: rgba(0,0,0,0.6)'>" +
     labelArrMap.join("") +
     "</div></div>";
-
+  console.log("In PawnPromotion highlightPreviousBool = false;");
   makeBoard();
 }
 function makeVirtualCell(row, col, showPieceBool) {
@@ -1239,6 +1243,7 @@ function pawnPromotionClick(row, col) {
   virtualBoardArr = boardArrLine.map(function (ele) {
     return [...boardArrLine];
   });
+  redoMoveArr.splice(0, redoMoveArr.length);
 }
 function knightConditions(row, col) {
   let bool = false;
@@ -1644,6 +1649,9 @@ function importGame() {
   if (pgnStr === "/lc")
     pgnStr =
       "1.e4 d5 2.exd5 c6 3.dxc6 a6 4.cxb7 a5 5.bxa8=B Bg4 6.Nc3 Qxd2+ 7.Qxd2";
+  if (pgnStr === "/1")
+    pgnStr =
+      "1.Nc3 Nc6 2.Nf3 Nf6 3.Nd4 Nd5 4.Ne4 Ne5 5.Nf5 Nf4 6.e3 e6 7.Bc4 Bc5 8.Qf3 Qf6 9.d3 d6 10.Bd2 Bd7 11.O-O-O O-O 12.Nfxd6 Nfxd3+ 13.Kb1 Nf4 14.Nf5 Ned3 15.Ned6 Nd5 16.Nd4 N3f4 17.N4f5 Nd3 18.Nd4 N5f4 19.N6f5 Qxd4 20.exd4 Bxd4 21.Qxf4 Nxf4 22.Bxe6 fxe6 23.Nxd4 Nxg2 24.Nxe6 Bxe6 25.Bh6 gxh6 26.h3 Bxh3 27.Rxh3 Rad8 28.Rdh1 Rfe8 29.R1h2 Re5 30.Rxg2+ Kh8 31.Rgh2 Rde8 32.Rh1 R8e6 33.R3h2 Re8 34.Rxh6 R5e7 35.R1h5 Re2 36.Rh2 Rxf2 37.R6h3 Rff8 38.Rd3 c5 39.b4 cxb4 40.c4 b3 41.c5 bxa2+ 42.Kb2 b5 43.cxb6 a1=R 44.bxa7 Rae1 45.a8=R R1e4 46.Raa3 R8e6 47.Rg3 Rfe8 48.Rhh3 Re2+ 49.Kb1 R6e4 50.Rgd3 R8e6 51.Rhf3 R6e5 52.Rac3";
   //document.getElementById("dd3").value = leftBarArr3[0];
   showPGN();
   decodePGN();
@@ -1777,7 +1785,6 @@ function decodePGN() {
   }
 }
 function makeBoardViaPGN(lastMovePGN) {
-  console.log(lastMovePGN);
   let newMoveLoad = { prevrow: -1, prevcol: -1, newrow: -1, newcol: -1 };
   let ogprevDetails = [];
   let pieceArr = [];
@@ -1871,7 +1878,6 @@ function makeBoardViaPGN(lastMovePGN) {
   playMovePGN(newMoveLoad);
 }
 function playMovePGN(newMoveLoad) {
-  console.log(newMoveLoad);
   prevrow = -1;
   prevcol = -1;
   boardClick(newMoveLoad.prevrow, newMoveLoad.prevcol);
