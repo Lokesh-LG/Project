@@ -145,22 +145,6 @@ function routineFunctionCalls() {
 }
 //Basic UI
 function createNavbar() {
-  // function createNavbar() {
-  //   navBarArr = navArr.map(function (ele, index) {
-  //     return (
-  //       "<li class='nav-item'><a class='nav-link nav-item' aria-current='page'  href = '#' id = 'Navbar" +
-  //       index +
-  //       "' onclick = navActions(" +
-  //       index +
-  //       ")>" +
-  //       navIconArr[index] +
-  //       " " +
-  //       ele +
-  //       "</a></li>"
-  //     );
-  //   });
-  //   document.getElementById("navbar").innerHTML = navBarArr.join("");
-  // }
   const navbar = document.getElementById("navbar");
   navArr.forEach((ele, index) => {
     const li = document.createElement("li");
@@ -1613,46 +1597,6 @@ function pointDifference(color) {
   return pointsStr;
 }
 
-//PGN Encoder Decoder
-// function makePGN() {
-//   pgnStr = pgnArr.reduce(function (ans, ele) {
-//     let notation = "";
-//     let colPgn = ["a", "b", "c", "d", "e", "f", "g", "h"];
-//     if (ele.color === "white")
-//       notation += Math.floor(ele.moveNumber / 2) + 1 + ".";
-//     if (!ele.castleBool) {
-//       if (ele.piece === "knight") notation += "N";
-//       else if (ele.piece === "rook") notation += "R";
-//       else if (ele.piece === "bishop") notation += "B";
-//       else if (ele.piece === "king") notation += "K";
-//       else if (ele.piece === "queen") notation += "Q";
-//       if (ele.ambiguityBool)
-//         if (ele.ambiguityBoolColSame) notation += String(8 - ele.prevrow);
-//         else notation += colPgn[ele.prevcol];
-//       if (Object.keys(ele.cutPiece).length != 0) {
-//         if (ele.piece === "pawn") notation += colPgn[ele.prevcol];
-//         notation += "x";
-//       }
-//       notation += colPgn[ele.newcol];
-//       notation += String(8 - ele.newrow);
-//       if (ele.pawnPromotion) {
-//         notation += "=";
-//         if (ele.pawnPromotedto === "knight") notation += "N";
-//         else if (ele.pawnPromotedto === "rook") notation += "R";
-//         else if (ele.pawnPromotedto === "bishop") notation += "B";
-//         else if (ele.pawnPromotedto === "king") notation += "K";
-//         else if (ele.pawnPromotedto === "queen") notation += "Q";
-//       }
-//       if (ele.checkBool) notation += "+";
-//     } else if (ele.newcol === 6) {
-//       notation += "O-O";
-//     } else if (ele.newcol === 2) {
-//       notation += "O-O-O";
-//     }
-//     notation += " ";
-//     return ans + notation;
-//   }, " ");
-// }
 function makePGN() {
   rightPgnArr = [];
   pgnStr = pgnArr.reduce(function (ans, ele) {
