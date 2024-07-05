@@ -141,7 +141,6 @@ function routineFunctionCalls() {
   makeDefaultUISettings2();
   createNavbar();
 }
-
 //Basic UI
 function createNavbar() {
   // function createNavbar() {
@@ -346,6 +345,101 @@ function makeCell(row, col) {
     "</div>"
   );
 }
+function makeCell(row, col) {
+  let pieceStr = "";
+  let possibleMoveStr = "";
+  let extraInfoStr = "";
+  let labelStr = "";
+  let draggableStr = "";
+  if (col === 0) {
+    labelStr = colRowBool
+      ? "<div class = 'p-1 label-col-box'>" + (8 - row) + "</div>"
+      : "<div class = 'p-1 label-col-box'></div>";
+  } else labelStr = "";
+  num = showMovesArr.findIndex(function (ele) {
+    return ele.row === row && ele.col === col;
+  });
+  if (Object.keys(boardArr[row][col]).length != 0) {
+    pieceStr =
+      "<img src='" +
+      imagePath +
+      boardArr[row][col].key +
+      "' onclick='hello(" +
+      row +
+      "," +
+      col +
+      ")'>";
+    draggableStr =
+      "draggable=true ondragstart='drag(event, " + row + ", " + col + ")'";
+  }
+  if (num != -1 && legalBool)
+    if (Object.keys(boardArr[row][col]).length != 0)
+      possibleMoveStr =
+        "<svg xmlns='http://www.w3.org/2000/svg' class = 'possible-move-square' viewBox='0 0 80 80' width='80' height='80'><circle cx='40' cy='40' r=" +
+        highlightDotRadius +
+        " fill='rgba(256, 100, 100, 0.4)'/></svg>";
+    else
+      possibleMoveStr =
+        "<svg xmlns='http://www.w3.org/2000/svg' class = 'possible-move-square' viewBox='0 0 80 80' width='80' height='80'><circle cx='40' cy='40' r=" +
+        highlightDotRadius +
+        " fill='rgba(100, 100, 100, 0.4)'/></svg>";
+  if (row === 0 && col === 0) {
+    extraInfoStr = "-top-start";
+  } else if (row === 7 && col === 0) {
+    extraInfoStr = "-bottom-start";
+  } else if (row === 0 && col === 7) {
+    extraInfoStr = "-top-end";
+  } else if (row === 7 && col === 7) {
+    extraInfoStr = "-bottom-end";
+  }
+  if (prevrow === row && prevcol === col && highlightPieceBool)
+    cellColor = (row + col) % 2 === 0 ? clr1x : clr2x;
+  else if (
+    pgnArr.length != 0 &&
+    pgnArr[pgnArr.length - 1].prevrow === row &&
+    pgnArr[pgnArr.length - 1].prevcol === col &&
+    highlightPreviousBool
+  )
+    cellColor = (row + col) % 2 === 0 ? clr1p : clr2p;
+  else if (
+    pgnArr.length != 0 &&
+    pgnArr[pgnArr.length - 1].newrow === row &&
+    pgnArr[pgnArr.length - 1].newcol === col &&
+    highlightPreviousBool
+  )
+    cellColor = (row + col) % 2 === 0 ? clr1p : clr2p;
+  else cellColor = (row + col) % 2 === 0 ? clr1 : clr2;
+  if (underCheck.bool && underCheck.posx === row && underCheck.posy === col) {
+    cellColor = (row + col) % 2 === 0 ? clr1c : clr2c;
+    if (prevrow === row && prevcol === col && highlightPieceBool)
+      cellColor = (row + col) % 2 === 0 ? clr1x : clr2x;
+  }
+  return (
+    labelStr +
+    "<div class='cellBox cellBorder" +
+    extraInfoStr +
+    "' id='cell-" +
+    row +
+    "-" +
+    col +
+    "' " +
+    draggableStr +
+    " ondrop='drop(event, " +
+    row +
+    ", " +
+    col +
+    ")' ondragover='allowDrop(event)' onclick='boardClickByUser(" +
+    row +
+    "," +
+    col +
+    ")' style='background-color: " +
+    cellColor +
+    "'>" +
+    pieceStr +
+    possibleMoveStr +
+    "</div>"
+  );
+}
 function highlightMoveCells() {
   let possibleMoveStr = "";
   for (let row = 0; row <= 7; row++) {
@@ -388,7 +482,6 @@ function highlightSelectedCell() {
 function makeBoard() {
   let storehighlightPreviousBool = highlightPreviousBool;
   highlightPreviousBool = virtualBoardStr ? false : highlightPreviousBool;
-  console.log("makeBoard highlightPreviousBool=", highlightPreviousBool);
   str = "";
   for (i = 0; i <= 7; i++) {
     str +=
@@ -1158,7 +1251,6 @@ function pawnPromotion(row, col, color) {
     "<div class='row row-cols-8 abcd-label-height-adjustment-virtual-black-cover abcd-label-padding' style='background-color: rgba(0,0,0,0.6)'>" +
     labelArrMap.join("") +
     "</div></div>";
-  console.log("In PawnPromotion highlightPreviousBool = false;");
   makeBoard();
 }
 function makeVirtualCell(row, col, showPieceBool) {
@@ -1496,7 +1588,6 @@ function redoMove() {
   }
   let localeLastMove = redoMoveArr.pop();
   comingFromRedoMoveBool = true;
-  console.log(localeLastMove);
   makeBoardViaPGN(localeLastMove);
 }
 
@@ -1652,6 +1743,12 @@ function importGame() {
   if (pgnStr === "/1")
     pgnStr =
       "1.Nc3 Nc6 2.Nf3 Nf6 3.Nd4 Nd5 4.Ne4 Ne5 5.Nf5 Nf4 6.e3 e6 7.Bc4 Bc5 8.Qf3 Qf6 9.d3 d6 10.Bd2 Bd7 11.O-O-O O-O 12.Nfxd6 Nfxd3+ 13.Kb1 Nf4 14.Nf5 Ned3 15.Ned6 Nd5 16.Nd4 N3f4 17.N4f5 Nd3 18.Nd4 N5f4 19.N6f5 Qxd4 20.exd4 Bxd4 21.Qxf4 Nxf4 22.Bxe6 fxe6 23.Nxd4 Nxg2 24.Nxe6 Bxe6 25.Bh6 gxh6 26.h3 Bxh3 27.Rxh3 Rad8 28.Rdh1 Rfe8 29.R1h2 Re5 30.Rxg2+ Kh8 31.Rgh2 Rde8 32.Rh1 R8e6 33.R3h2 Re8 34.Rxh6 R5e7 35.R1h5 Re2 36.Rh2 Rxf2 37.R6h3 Rff8 38.Rd3 c5 39.b4 cxb4 40.c4 b3 41.c5 bxa2+ 42.Kb2 b5 43.cxb6 a1=R 44.bxa7 Rae1 45.a8=R R1e4 46.Raa3 R8e6 47.Rg3 Rfe8 48.Rhh3 Re2+ 49.Kb1 R6e4 50.Rgd3 R8e6 51.Rhf3 R6e5 52.Rac3";
+  if (pgnStr === "/r3")
+    pgnStr =
+      "1.Nc3 Nc6 2.Nf3 Nf6 3.Nd4 Nd5 4.Ne4 Ne5 5.Nf5 Nf4 6.e3 e6 7.Bc4 Bc5 8.Qf3 Qf6 9.d3 d6 10.Bd2 Bd7 11.O-O-O O-O 12.Nfxd6 Nfxd3+ 13.Kb1 Nf4 14.Nf5 Ned3 15.Ned6 Nd5 16.Nd4 N3f4 17.N4f5 Nd3 18.Nd4 N5f4 19.N6f5 Qxd4 20.exd4 Bxd4 21.Qxf4 Nxf4 22.Bxe6 fxe6 23.Nxd4 Nxg2 24.Nxe6 Bxe6 25.Bh6 gxh6 26.h3 Bxh3 27.Rxh3 Rad8 28.Rdh1 Rfe8 29.R1h2 Re5 30.Rxg2+ Kh8 31.Rgh2 Rde8 32.Rh1 R8e6 33.R3h2 Re8 34.Rxh6 R5e7 35.R1h5 Re2 36.Rh2 Rxf2 37.R6h3 Rff8 38.Rd3 c5 39.b4 cxb4 40.c4 b3 41.c5 bxa2+ 42.Kb2 b5 43.cxb6 a1=R 44.bxa7 Rae1 45.a8=R R8e3 46.Rad8 Rfe8 47.Rhd2 R1e2 48.R8d4 R8e4 49.Rd6 Re6 50.R3d4 Re1 51.Rd1 R3e4 52.R4d3 R4e3 53.R6d5 R6e5 54.Rc3 Rf3 55.R1d3 R5e3 56.Rb3 Rg3 57.Rdc3 Ref3 58.Rdd3 Ree3 59.Ra3 Rh3 60.Rcb3 Rfg3 61.Rdc3 Ref3 62.Rd3 Re3 63.Rbc3 Rgf3";
+  if (pgnStr === "/n3")
+    pgnStr =
+      "1.b4 g5 2.b5 a5 3.bxa6 g4 4.h4 gxh3 5.axb7 hxg2 6.bxc8=N gxf1=N 7.Nb6 Ng3 8.Nc4 Nf5 9.Nc3 Nc6 10.Nf3 Nf6 11.Na4 Nd5 12.Nab2 Nf4 13.Nd3 Ne6 14.Nce5 Ned4 15.Nc4 Ne6 16.Nde5 Nfd4 17.Nd3 Nf5 18.Nfe5 Ncd4 19.Nf3 Nc6 20.c3 Ne3 21.Nfe5 Nc2+ 22.Kf1 N2d4 23.Nxd7 Nc2 24.Nce5 N6d4 25.Nxf7 Nc6 26.N7e5 N6d4 27.Nd7 Nc6 28.Nfe5 Ned4 29.Nf7 Ne6 30.N3e5 N2d4 31.Nd3 Nc2";
   //document.getElementById("dd3").value = leftBarArr3[0];
   showPGN();
   decodePGN();
@@ -2513,15 +2610,14 @@ function allowDrop(event) {
   //console.log("allowDrop", event);
 }
 function drag(event, row, col) {
-  event.dataTransfer.setData("text", event.target.parentElement.id);
-  // Call boardClick to show possible moves
-  console.log("Drag", event, row, col);
+  event.dataTransfer.setData("text/plain", event.target.id);
+  prevrow = -1;
+  prevcol = -1;
   boardClick(row, col);
   return false;
 }
 function drop(event, row, col) {
   event.preventDefault();
-  console.log("Drop", event, row, col);
   let num = showMovesArr.findIndex(function (ele) {
     return ele.row === row && ele.col === col;
   });
@@ -2533,40 +2629,6 @@ function drop(event, row, col) {
     makeBoard();
   }
 }
-// function drop(event, row, col) {
-//   event.preventDefault();
-//   console.log("Drop", event, row, col);
-//   let fromSquareId = event.dataTransfer.getData("text");
-//   let fromSquare = document.getElementById(fromSquareId);
-//   let toSquare = event.target;
-
-//   // Ensure to drop the piece in the cell and not on another piece
-//   if (toSquare.classList.contains("cellBox")) {
-//     toSquare.appendChild(fromSquare.querySelector("img"));
-//   } else {
-//     toSquare.parentElement.appendChild(fromSquare.querySelector("img"));
-//   }
-
-//   let fromSquareRowCol = fromSquareId.split("-").slice(1).map(Number);
-//   let toSquareRowCol = [row, col];
-
-//   // Check if the move is valid
-//   let isValidMove = showMovesArr.some(function (ele) {
-//     return ele.row === row && ele.col === col;
-//   });
-
-//   if (isValidMove) {
-//     console.log(`Moved from ${fromSquareRowCol} to ${toSquareRowCol}`);
-
-//     // Update the board state after the move
-//     updateBoardState(fromSquareRowCol, toSquareRowCol);
-//     makeBoard(); // Redraw the board if necessary
-//   } else {
-//     // If not valid, revert the move
-//     fromSquare.appendChild(toSquare.querySelector("img"));
-//     alert("Invalid move!");
-//   }
-// }
 function updateBoardState(fromSquareRowCol, toSquareRowCol) {
   let [fromRow, fromCol] = fromSquareRowCol;
   let [toRow, toCol] = toSquareRowCol;
@@ -2574,113 +2636,6 @@ function updateBoardState(fromSquareRowCol, toSquareRowCol) {
   boardArr[toRow][toCol] = boardArr[fromRow][fromCol];
   boardArr[fromRow][fromCol] = {};
 }
-// function boardClick(row, col) {
-//   console.log(prevrow, prevcol, row, col);
-//   if (prevrow === -1 || prevcol === -1) {
-//     if (
-//       Object.keys(boardArr[row][col]).length != 0 &&
-//       moveStartConditon(row, col)
-//     ) {
-//       prevrow = row;
-//       prevcol = col;
-//       showValidMoves();
-//       inCheckCondition(boardArr[row][col].color);
-//       if (boardArr[prevrow][prevcol].piece === "king") checkCastle();
-//       //makeBoard();
-//       highlightMoveCells();
-//     }
-//   } else if (prevrow === row && prevcol === col) {
-//     prevrow = -1;
-//     prevcol = -1;
-//     showMovesArr = [];
-//     makeBoard();
-//   } else {
-//     let obj = showMovesArr.find(function (ele) {
-//       return ele.row === row && ele.col === col;
-//     });
-//     if (obj) {
-//       lastMove(row, col);
-//       let localePgnGenerationStopBool = true;
-//       if (
-//         checkEnPassant(row, col, boardArr[prevrow][prevcol].color) &&
-//         pgnArr.length != 0
-//       ) {
-//         lastMoveJSON.enPassant = true;
-//         lastMoveJSON.cutPiece =
-//           boardArr[pgnArr[pgnArr.length - 1].newrow][
-//             pgnArr[pgnArr.length - 1].newcol
-//           ];
-//         boardArr[pgnArr[pgnArr.length - 1].newrow][
-//           pgnArr[pgnArr.length - 1].newcol
-//         ] = {};
-//         let pointColor =
-//           boardArr[prevrow][prevcol].color === "white" ? "black" : "white";
-//         pointUpdateCounter("pawn", pointColor);
-//       }
-//       if (
-//         ((boardArr[prevrow][prevcol].color === "white" && row === 0) ||
-//           (boardArr[prevrow][prevcol].color === "black" && row === 7)) &&
-//         boardArr[prevrow][prevcol].piece === "pawn"
-//       ) {
-//         if (Object.keys(isLoadingPGNPawnPromotionJSON).length === 0) {
-//           pawnPromotion(row, col, boardArr[prevrow][prevcol].color);
-//           localePgnGenerationStopBool = false;
-//         }
-//       }
-//       if (boardArr[prevrow][prevcol].piece === "king") {
-//         if (Math.abs(prevrow - row) === 0 && Math.abs(prevcol - col) === 2) {
-//           lastMoveJSON.castleBool = true;
-//           castleMove(row, col, boardArr[prevrow][prevcol].color);
-//           lastMoveJSON.castleDisable = moveCount;
-//           castleBool["short" + boardArr[prevrow][prevcol].color] = false;
-//           castleBool["long" + boardArr[prevrow][prevcol].color] = false;
-//         }
-//         if (boardArr[prevrow][prevcol].piece === "rook") {
-//           let sideStr = prevcol === 0 ? "long" : "short";
-//           lastMoveJSON.castleDisable = moveCount;
-//           castleBool[sideStr + boardArr[prevrow][prevcol].color] = false;
-//         }
-//         temp = boardArr[row][col];
-//         boardArr[row][col] = boardArr[prevrow][prevcol];
-//         boardArr[prevrow][prevcol] = {};
-//         if (Object.keys(isLoadingPGNPawnPromotionJSON).length != 0) {
-//           boardArr[isLoadingPGNPawnPromotionJSON.row][
-//             isLoadingPGNPawnPromotionJSON.col
-//           ] = isLoadingPGNPawnPromotionJSON.json;
-//           missingPiecesUpdate();
-//         }
-//         moveCount++;
-//         prevrow = -1;
-//         prevcol = -1;
-//         showMovesArr = [];
-//         checkCheck();
-//         lastMoveJSON.checkBool = underCheck.bool;
-//         if (localePgnGenerationStopBool) {
-//           pgnArr.push(lastMoveJSON);
-//         }
-//         makePGN();
-//         makeBoard();
-//         if (Object.keys(temp).length != 0) {
-//           pointUpdateCounter(temp.piece, temp.color);
-//         }
-//         if (document.getElementById("dd3").value === leftBarArr3[0]) {
-//           showPGN();
-//         }
-//       } else if (moveStartConditon(row, col)) {
-//         prevrow = row;
-//         prevcol = col;
-//         showValidMoves();
-//         inCheckCondition(boardArr[row][col].color);
-//         if (boardArr[prevrow][prevcol].piece === "king") {
-//           checkCastle();
-//         }
-//         makeBoard();
-//       }
-//     }
-//   }
-// }
-
-//move
 let movesSimulated = { do: 0, undo: 0 };
 function getPiecesofOneColor(boardPosition) {
   return boardPosition.reduce(
@@ -2775,6 +2730,3 @@ function autoPlay(depth) {
   console.log(movesSimulated);
   console.log(newMove);
 }
-
-//1.e4 d5 2.exd5 c6 3.dxc6 a6 4.cxb7 a5 5.bxa8=B Bg4 6.Nc3 Qxd2+ 7.Qxd2
-//1.e4 e5 2.Nc3 Nc6 3.Nf3 Nf6 4.Nd5 Nd4 5.Ne3 Ne6 6.Nf5 Nf4 7.N5d4 N4d5 8.d3 d6 9.Bf4 Be7 10.Be2 Bf5 11.exf5 exf4 12.Ne5 dxe5 13.O-O Ne4 14.dxe4 f3 15.f6 O-O 16.fxe7 fxe2 17.exd8=R exd1=R 18.Rfxd1 Raxd8 19.Nc6 Ne7 20.Rxd8 Rxd8 21.Rd1 Rxd1+
